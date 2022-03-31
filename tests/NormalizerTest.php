@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace DBorsatto\SqlResultSetMapper\Tests;
 
+use DBorsatto\SqlResultSetMapper\Exception\SqlResultSetCouldNotBeNormalizedBecauseItIsMissingConfiguredPropertyColumnException;
+use DBorsatto\SqlResultSetMapper\Exception\SqlResultSetCouldNotBeNormalizedBecauseItIsMissingRequiredIdColumnException;
 use DBorsatto\SqlResultSetMapper\Map;
 use DBorsatto\SqlResultSetMapper\Normalizer;
 use PHPUnit\Framework\TestCase;
@@ -13,7 +15,7 @@ class NormalizerTest extends TestCase
 {
     public function testNormalization(): void
     {
-        $map = Map::root(stdClass::class, 'userId', [
+        $mapping = Map::root(stdClass::class, 'userId', [
             Map::property('id', 'userId'),
             Map::property('firstName', 'userFirstName'),
             Map::relation('blogPosts', stdClass::class, 'blogPostId', [
@@ -100,7 +102,7 @@ class NormalizerTest extends TestCase
             ],
         ];
 
-        $normalizer = new Normalizer($map);
+        $normalizer = new Normalizer($mapping);
 
         $expected = [
             [
@@ -153,5 +155,39 @@ class NormalizerTest extends TestCase
         ];
 
         $this->assertSame($expected, $normalizer->normalize($sqlResultSetRows));
+    }
+
+    public function testMissingIdColumn(): void
+    {
+        $this->expectException(SqlResultSetCouldNotBeNormalizedBecauseItIsMissingRequiredIdColumnException::class);
+
+        $mapping = Map::root(stdClass::class, 'userId', []);
+
+        $sqlResultSetRows = [
+            [
+                'userFirstName' => 'John',
+            ],
+        ];
+
+        $normalizer = new Normalizer($mapping);
+        $normalizer->normalize($sqlResultSetRows);
+    }
+
+    public function testMissingPropertyColumn(): void
+    {
+        $this->expectException(SqlResultSetCouldNotBeNormalizedBecauseItIsMissingConfiguredPropertyColumnException::class);
+
+        $mapping = Map::root(stdClass::class, 'userId', [
+            Map::property('', 'userFirstName')
+        ]);
+
+        $sqlResultSetRows = [
+            [
+                'userId' => 1,
+            ],
+        ];
+
+        $normalizer = new Normalizer($mapping);
+        $normalizer->normalize($sqlResultSetRows);
     }
 }

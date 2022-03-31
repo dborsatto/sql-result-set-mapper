@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace DBorsatto\SqlResultSetMapper;
 
 use DBorsatto\SqlResultSetMapper\Configuration\RootMapping;
-use DBorsatto\SqlResultSetMapper\Exception\SqlResultSetCouldNotBeNormalizedBecauseItIsMissingConfiguredColumnException;
+use DBorsatto\SqlResultSetMapper\Exception\SqlResultSetCouldNotBeNormalizedBecauseItIsMissingConfiguredPropertyColumnException;
 use DBorsatto\SqlResultSetMapper\Exception\SqlResultSetCouldNotBeNormalizedBecauseItIsMissingRequiredIdColumnException;
 use DBorsatto\SqlResultSetMapper\Hydrator\HydratorInterface;
 use DBorsatto\SqlResultSetMapper\Hydrator\LaminasHydrator;
@@ -25,7 +25,7 @@ class Mapper
      * @param RootMapping<T>                             $rootMapping
      * @param list<array<string, string|int|float|null>> $rows
      *
-     * @throws SqlResultSetCouldNotBeNormalizedBecauseItIsMissingConfiguredColumnException
+     * @throws SqlResultSetCouldNotBeNormalizedBecauseItIsMissingConfiguredPropertyColumnException
      * @throws SqlResultSetCouldNotBeNormalizedBecauseItIsMissingRequiredIdColumnException
      *
      * @return list<T>

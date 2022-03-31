@@ -6,7 +6,7 @@ namespace DBorsatto\SqlResultSetMapper;
 
 use DBorsatto\SqlResultSetMapper\Configuration\ClassMappingInterface;
 use DBorsatto\SqlResultSetMapper\Configuration\RootMapping;
-use DBorsatto\SqlResultSetMapper\Exception\SqlResultSetCouldNotBeNormalizedBecauseItIsMissingConfiguredColumnException;
+use DBorsatto\SqlResultSetMapper\Exception\SqlResultSetCouldNotBeNormalizedBecauseItIsMissingConfiguredPropertyColumnException;
 use DBorsatto\SqlResultSetMapper\Exception\SqlResultSetCouldNotBeNormalizedBecauseItIsMissingRequiredIdColumnException;
 use function array_key_exists;
 use function array_values;
@@ -32,7 +32,7 @@ class Normalizer
     /**
      * @param list<array<string, string|int|float|null>> $sqlResultSetRows
      *
-     * @throws SqlResultSetCouldNotBeNormalizedBecauseItIsMissingConfiguredColumnException
+     * @throws SqlResultSetCouldNotBeNormalizedBecauseItIsMissingConfiguredPropertyColumnException
      * @throws SqlResultSetCouldNotBeNormalizedBecauseItIsMissingRequiredIdColumnException
      *
      * @return list<array>
@@ -45,7 +45,7 @@ class Normalizer
     /**
      * @param list<array<string, string|int|float|null>> $sqlResultSetRows
      *
-     * @throws SqlResultSetCouldNotBeNormalizedBecauseItIsMissingConfiguredColumnException
+     * @throws SqlResultSetCouldNotBeNormalizedBecauseItIsMissingConfiguredPropertyColumnException
      * @throws SqlResultSetCouldNotBeNormalizedBecauseItIsMissingRequiredIdColumnException
      *
      * @return list<array>
@@ -75,7 +75,7 @@ class Normalizer
             foreach ($classMapping->getPropertyMappings() as $propertyMapping) {
                 $propertyResultSetColumn = $propertyMapping->getResultSetColumn();
                 if (!array_key_exists($propertyResultSetColumn, $sqlResultSetRow)) {
-                    throw SqlResultSetCouldNotBeNormalizedBecauseItIsMissingConfiguredColumnException::create(
+                    throw SqlResultSetCouldNotBeNormalizedBecauseItIsMissingConfiguredPropertyColumnException::create(
                         $propertyResultSetColumn,
                     );
                 }
