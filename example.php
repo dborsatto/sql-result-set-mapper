@@ -30,7 +30,7 @@ class BlogPostReadModel
 
 $mapper = new Mapper();
 
-$map = Map::root(AuthorReadModel::class, 'id', [
+$mapping = Map::root(AuthorReadModel::class, 'id', [
     Map::property('id', 'id'),
     Map::property('firstName', 'firstName'),
     Map::property('lastName', 'lastName'),
@@ -42,4 +42,4 @@ $map = Map::root(AuthorReadModel::class, 'id', [
         Map::property('body', 'blogPostBody'),
     ]),
 ]);
-$models = $mapper->map($map, $results);
+$models = $mapper->map($mapping, $results);
