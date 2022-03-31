@@ -16,8 +16,7 @@ class Email
 class AuthorReadModel
 {
     private int $id;
-    private string $firstName;
-    private string $lastName;
+    private string $name;
     private ?Email $email;
     private array $blogPosts;
 }
@@ -28,13 +27,26 @@ class BlogPostReadModel
     private string $body;
 }
 
+$sql = <<<SQL
+    SELECT
+        a.id AS authorId,
+        a.name AS authorName,
+        a.email AS authorEmail,
+        bp.id AS blogPostId,
+        bp.title AS blogPostTitle,
+        bp.body AS blogPostBody
+    FROM authors a
+    LEFT JOIN blog_posts bp ON bp.author_id = author.id
+SQL;
+
+// Execute query
+
 $mapper = new Mapper();
 
 $mapping = Map::root(AuthorReadModel::class, 'id', [
-    Map::property('id', 'id'),
-    Map::property('firstName', 'firstName'),
-    Map::property('lastName', 'lastName'),
-    Map::nullableProperty('email', 'email', static function (string $email): Email {
+    Map::property('id', 'authorId'),
+    Map::property('name', 'authorName'),
+    Map::property('email', 'authorEmail', static function (string $email): Email {
         return new Email($email);
     }),
     Map::relation('blogPosts', BlogPostReadModel::class, 'blogPostId', [
