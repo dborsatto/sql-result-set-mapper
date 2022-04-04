@@ -30,7 +30,7 @@ class Normalizer
     }
 
     /**
-     * @param list<array<string, string|int|float|null>> $sqlResultSetRows
+     * @param list<array<string, string|int|null>> $sqlResultSetRows
      *
      * @throws SqlResultSetCouldNotBeNormalizedBecauseItIsMissingConfiguredPropertyColumnException
      * @throws SqlResultSetCouldNotBeNormalizedBecauseItIsMissingRequiredIdColumnException
@@ -43,7 +43,7 @@ class Normalizer
     }
 
     /**
-     * @param list<array<string, string|int|float|null>> $sqlResultSetRows
+     * @param list<array<string, string|int|null>> $sqlResultSetRows
      *
      * @throws SqlResultSetCouldNotBeNormalizedBecauseItIsMissingConfiguredPropertyColumnException
      * @throws SqlResultSetCouldNotBeNormalizedBecauseItIsMissingRequiredIdColumnException
@@ -55,22 +55,22 @@ class Normalizer
         $dataForCurrentConfiguration = [];
 
         $configurationIdColumn = $classMapping->getResultSetIdColumn();
-        foreach ($sqlResultSetRows as $sqlResultSetRow) {
+        foreach ($sqlResultSetRows as $currentIndex => $sqlResultSetRow) {
             $extractedRowData = [];
 
-            if (!array_key_exists($configurationIdColumn, $sqlResultSetRow)) {
-                throw SqlResultSetCouldNotBeNormalizedBecauseItIsMissingRequiredIdColumnException::create(
-                    $configurationIdColumn,
-                );
-            }
+            $rowDataId = $this->getRowId($sqlResultSetRow, $classMapping);
 
-            // If the ID is missing, we might in the result of a LEFT JOIN
+            // If the ID is missing, we might be in the result of a LEFT JOIN
             // with no joined results, so we just move on to the next row.
-            if ($sqlResultSetRow[$configurationIdColumn] === null) {
+            if ($rowDataId === null) {
                 continue;
             }
 
-            $rowDataId = $sqlResultSetRow[$configurationIdColumn];
+            // If the ID is already present, it means we already processed the current result row
+            // and we're dealing with a JOIN duplicate.
+            if (array_key_exists($rowDataId, $dataForCurrentConfiguration)) {
+                continue;
+            }
 
             foreach ($classMapping->getPropertyMappings() as $propertyMapping) {
                 $propertyResultSetColumn = $propertyMapping->getResultSetColumn();
@@ -85,7 +85,7 @@ class Normalizer
 
             foreach ($classMapping->getRelationMappings() as $relationMapping) {
                 $extractedRowData[$relationMapping->getObjectProperty()] = $this->normalizeWithMapping(
-                    $this->filterRows($sqlResultSetRows, $configurationIdColumn, $rowDataId),
+                    $this->filterSqlResultSetRows($sqlResultSetRows, $currentIndex, $configurationIdColumn, $rowDataId),
                     $relationMapping,
                 );
             }
@@ -98,29 +98,52 @@ class Normalizer
     }
 
     /**
-     * @param list<array<string, string|int|float|null>> $rows
-     * @param string                                     $column
-     * @param string|int|float                           $value
+     * @param array<string, string|int|null> $sqlResultSetRow
      *
-     * @return list<array<string, string|int|float|null>>
+     * @throws SqlResultSetCouldNotBeNormalizedBecauseItIsMissingRequiredIdColumnException
+     *
+     * @return int|string|null
      */
-    private function filterRows(array $rows, string $column, $value): array
+    private function getRowId(array $sqlResultSetRow, ClassMappingInterface $classMapping)
     {
-        $filtered = [];
-        $found = false;
-        foreach ($rows as $row) {
-            if ($row[$column] !== $value) {
-                if ($found) {
-                    return $filtered;
-                }
-
-                continue;
-            }
-
-            $filtered[] = $row;
-            $found = true;
+        $configurationIdColumn = $classMapping->getResultSetIdColumn();
+        if (!array_key_exists($configurationIdColumn, $sqlResultSetRow)) {
+            throw SqlResultSetCouldNotBeNormalizedBecauseItIsMissingRequiredIdColumnException::create(
+                $configurationIdColumn,
+            );
         }
 
-        return $filtered;
+        // If the ID is missing, we might be in the result of a LEFT JOIN
+        // with no joined results, so we just move on to the next row.
+        if ($sqlResultSetRow[$configurationIdColumn] === null) {
+            return null;
+        }
+
+        return $sqlResultSetRow[$configurationIdColumn];
+    }
+
+    /**
+     * @param list<array<string, string|int|null>> $sqlResultSetRows
+     * @param string|int                           $idValue
+     *
+     * @return list<array<string, string|int|null>>
+     */
+    private function filterSqlResultSetRows(array $sqlResultSetRows, int $startingIndex, string $idColumn, $idValue): array
+    {
+        $filteredSqlResultSetRows = [];
+        $currentIndex = $startingIndex;
+
+        while (array_key_exists($currentIndex, $sqlResultSetRows)) {
+            $sqlResultSetRow = $sqlResultSetRows[$currentIndex];
+            if ($sqlResultSetRow[$idColumn] !== $idValue) {
+                return $filteredSqlResultSetRows;
+            }
+
+            $filteredSqlResultSetRows[] = $sqlResultSetRow;
+
+            $currentIndex++;
+        }
+
+        return $filteredSqlResultSetRows;
     }
 }

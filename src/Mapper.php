@@ -22,8 +22,8 @@ class Mapper
     /**
      * @template T of object
      *
-     * @param RootMapping<T>                             $rootMapping
-     * @param list<array<string, string|int|float|null>> $rows
+     * @param RootMapping<T>                       $rootMapping
+     * @param list<array<string, string|int|null>> $rows
      *
      * @throws SqlResultSetCouldNotBeNormalizedBecauseItIsMissingConfiguredPropertyColumnException
      * @throws SqlResultSetCouldNotBeNormalizedBecauseItIsMissingRequiredIdColumnException
