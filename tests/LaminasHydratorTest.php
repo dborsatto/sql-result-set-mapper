@@ -109,5 +109,4 @@ class LaminasHydratorTest extends TestCase
 
         $this->assertEquals($expected, $hydrator->hydrate($mapping, $items));
     }
-
 }

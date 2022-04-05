@@ -44,14 +44,18 @@ class Normalizer
 
     /**
      * @param list<array<string, string|int|null>> $sqlResultSetRows
+     * @param array<string, string|int>            $currentIds
      *
      * @throws SqlResultSetCouldNotBeNormalizedBecauseItIsMissingConfiguredPropertyColumnException
      * @throws SqlResultSetCouldNotBeNormalizedBecauseItIsMissingRequiredIdColumnException
      *
      * @return list<array>
      */
-    private function normalizeWithMapping(array $sqlResultSetRows, ClassMappingInterface $classMapping): array
-    {
+    private function normalizeWithMapping(
+        array $sqlResultSetRows,
+        ClassMappingInterface $classMapping,
+        array $currentIds = []
+    ): array {
         $dataForCurrentConfiguration = [];
 
         $configurationIdColumn = $classMapping->getResultSetIdColumn();
@@ -72,6 +76,8 @@ class Normalizer
                 continue;
             }
 
+            $currentIds[$configurationIdColumn] = $rowDataId;
+
             foreach ($classMapping->getPropertyMappings() as $propertyMapping) {
                 $propertyResultSetColumn = $propertyMapping->getResultSetColumn();
                 if (!array_key_exists($propertyResultSetColumn, $sqlResultSetRow)) {
@@ -85,8 +91,9 @@ class Normalizer
 
             foreach ($classMapping->getRelationMappings() as $relationMapping) {
                 $extractedRowData[$relationMapping->getObjectProperty()] = $this->normalizeWithMapping(
-                    $this->filterSqlResultSetRows($sqlResultSetRows, $currentIndex, $configurationIdColumn, $rowDataId),
+                    $this->filterSqlResultSetRows($sqlResultSetRows, $currentIndex, $currentIds),
                     $relationMapping,
+                    $currentIds,
                 );
             }
 
@@ -124,18 +131,18 @@ class Normalizer
 
     /**
      * @param list<array<string, string|int|null>> $sqlResultSetRows
-     * @param string|int                           $idValue
+     * @param array<string, string|int>            $currentIds
      *
      * @return list<array<string, string|int|null>>
      */
-    private function filterSqlResultSetRows(array $sqlResultSetRows, int $startingIndex, string $idColumn, $idValue): array
+    private function filterSqlResultSetRows(array $sqlResultSetRows, int $startingIndex, array $currentIds): array
     {
         $filteredSqlResultSetRows = [];
         $currentIndex = $startingIndex;
 
         while (array_key_exists($currentIndex, $sqlResultSetRows)) {
             $sqlResultSetRow = $sqlResultSetRows[$currentIndex];
-            if ($sqlResultSetRow[$idColumn] !== $idValue) {
+            if (!$this->hasSqlResultSetRowCurrentIds($sqlResultSetRow, $currentIds)) {
                 return $filteredSqlResultSetRows;
             }
 
@@ -145,5 +152,24 @@ class Normalizer
         }
 
         return $filteredSqlResultSetRows;
+    }
+
+    /**
+     * @param array<string, string|int|null> $sqlResultSetRow
+     * @param array<string, string|int>      $currentIds
+     */
+    private function hasSqlResultSetRowCurrentIds(array $sqlResultSetRow, array $currentIds): bool
+    {
+        foreach ($currentIds as $idColumn => $idValue) {
+            if (!array_key_exists($idColumn, $sqlResultSetRow)) {
+                return false;
+            }
+
+            if ($sqlResultSetRow[$idColumn] !== $idValue) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
