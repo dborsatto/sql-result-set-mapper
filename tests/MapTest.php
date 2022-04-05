@@ -6,7 +6,6 @@ namespace DBorsatto\SqlResultSetMapper\Tests;
 
 use DateTime;
 use DateTimeImmutable;
-use DBorsatto\SqlResultSetMapper\Configuration\RootMapping;
 use DBorsatto\SqlResultSetMapper\Map;
 use DBorsatto\SqlResultSetMapper\Tests\Model\Email;
 use PHPUnit\Framework\TestCase;

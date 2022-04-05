@@ -27,17 +27,17 @@ class BlogPostReadModel
     private string $body;
 }
 
-$sql = <<<SQL
-    SELECT
-        a.id AS authorId,
-        a.name AS authorName,
-        a.email AS authorEmail,
-        bp.id AS blogPostId,
-        bp.title AS blogPostTitle,
-        bp.body AS blogPostBody
-    FROM authors a
-    LEFT JOIN blog_posts bp ON bp.author_id = author.id
-SQL;
+$sql = <<<'SQL'
+        SELECT
+            a.id AS authorId,
+            a.name AS authorName,
+            a.email AS authorEmail,
+            bp.id AS blogPostId,
+            bp.title AS blogPostTitle,
+            bp.body AS blogPostBody
+        FROM authors a
+        LEFT JOIN blog_posts bp ON bp.author_id = author.id
+    SQL;
 
 // Execute query
 

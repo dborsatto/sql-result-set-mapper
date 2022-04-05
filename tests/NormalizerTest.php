@@ -178,7 +178,7 @@ class NormalizerTest extends TestCase
         $this->expectException(SqlResultSetCouldNotBeNormalizedBecauseItIsMissingConfiguredPropertyColumnException::class);
 
         $mapping = Map::root(stdClass::class, 'userId', [
-            Map::property('', 'userFirstName')
+            Map::property('', 'userFirstName'),
         ]);
 
         $sqlResultSetRows = [
