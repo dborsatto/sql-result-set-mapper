@@ -9,6 +9,7 @@ use DBorsatto\SqlResultSetMapper\Configuration\RootMapping;
 use Laminas\Hydrator\ReflectionHydrator;
 use Laminas\Hydrator\Strategy\ClosureStrategy;
 use Laminas\Hydrator\Strategy\CollectionStrategy;
+use Laminas\Hydrator\Strategy\HydratorStrategy;
 use ReflectionClass;
 
 class LaminasHydrator implements HydratorInterface
@@ -52,12 +53,16 @@ class LaminasHydrator implements HydratorInterface
 
         foreach ($classMapping->getRelationMappings() as $relationMapping) {
             $relationHydrator = new ReflectionHydrator();
-            $hydrator->addStrategy(
-                $relationMapping->getObjectProperty(),
-                new CollectionStrategy($relationHydrator, $relationMapping->getTargetClass()),
-            );
 
-            $this->configureHydrator($relationHydrator, $relationMapping);
+            $strategy = $relationMapping->isMultiple()
+                ? new CollectionStrategy($relationHydrator, $relationMapping->getTargetClass())
+                : new HydratorStrategy($relationHydrator, $relationMapping->getTargetClass());
+
+            $hydrator->addStrategy($relationMapping->getObjectProperty(), $strategy);
+
+            if ($relationMapping->isMultiple()) {
+                $this->configureHydrator($relationHydrator, $relationMapping);
+            }
         }
     }
 }

@@ -7,6 +7,7 @@ namespace DBorsatto\SqlResultSetMapper\Tests;
 use DateTimeImmutable;
 use DBorsatto\SqlResultSetMapper\Hydrator\LaminasHydrator;
 use DBorsatto\SqlResultSetMapper\Map;
+use DBorsatto\SqlResultSetMapper\Tests\Model\Address;
 use DBorsatto\SqlResultSetMapper\Tests\Model\Author;
 use DBorsatto\SqlResultSetMapper\Tests\Model\BlogPost;
 use DBorsatto\SqlResultSetMapper\Tests\Model\Email;
@@ -45,6 +46,7 @@ class LaminasHydratorTest extends TestCase
                         'expiresAt' => '2022-02-25 16:00:00',
                     ],
                 ],
+                'address' => null,
             ],
             [
                 'id' => 2,
@@ -55,6 +57,9 @@ class LaminasHydratorTest extends TestCase
                     [
                         'expiresAt' => '2022-02-27 16:00:00',
                     ],
+                ],
+                'address' => [
+                    'description' => 'Rome, Italy',
                 ],
             ],
             [
@@ -68,6 +73,9 @@ class LaminasHydratorTest extends TestCase
                     ],
                 ],
                 'sessions' => [],
+                'address' => [
+                    'description' => 'Paris, France',
+                ],
             ],
         ];
 
@@ -83,8 +91,11 @@ class LaminasHydratorTest extends TestCase
                 Map::property('title', 'blogPostTitle'),
                 Map::property('body', 'blogPostBody'),
             ]),
-            Map::relation('sessions', Session::class, 'sessionId', [
+            Map::multipleRelation('sessions', Session::class, 'sessionId', [
                 Map::datetimeImmutableProperty('expiresAt', 'sessionExpiresAt'),
+            ]),
+            Map::singleRelation('address', Address::class, 'addressId', [
+                Map::property('description', 'addressDescription'),
             ]),
         ]);
 
@@ -98,13 +109,13 @@ class LaminasHydratorTest extends TestCase
             ], [
                 new Session(new DateTimeImmutable('2022-02-23 16:00:00')),
                 new Session(new DateTimeImmutable('2022-02-25 16:00:00')),
-            ]),
+            ], null),
             new Author(2, 'Jane', new Email('jane.smith@example.com'), [], [
                 new Session(new DateTimeImmutable('2022-02-27 16:00:00')),
-            ]),
+            ], new Address('Rome, Italy')),
             new Author(3, 'Jimmy', null, [
                 new BlogPost('What a title', 'What a body'),
-            ], []),
+            ], [], new Address('Paris, France')),
         ];
 
         $this->assertEquals($expected, $hydrator->hydrate($mapping, $items));

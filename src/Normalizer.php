@@ -90,11 +90,15 @@ class Normalizer
             }
 
             foreach ($classMapping->getRelationMappings() as $relationMapping) {
-                $extractedRowData[$relationMapping->getObjectProperty()] = $this->normalizeWithMapping(
+                $extractedRowDataForRelation = $this->normalizeWithMapping(
                     $this->filterSqlResultSetRows($sqlResultSetRows, $currentIndex, $currentIds),
                     $relationMapping,
                     $currentIds,
                 );
+
+                $extractedRowData[$relationMapping->getObjectProperty()] = $relationMapping->isMultiple()
+                    ? $extractedRowDataForRelation
+                    : ($extractedRowDataForRelation[0] ?? null);
             }
 
             $dataForCurrentConfiguration[$rowDataId] = $extractedRowData;

@@ -7,6 +7,7 @@ namespace DBorsatto\SqlResultSetMapper\Tests;
 use DateTimeImmutable;
 use DBorsatto\SqlResultSetMapper\Map;
 use DBorsatto\SqlResultSetMapper\Mapper;
+use DBorsatto\SqlResultSetMapper\Tests\Model\Address;
 use DBorsatto\SqlResultSetMapper\Tests\Model\Author;
 use DBorsatto\SqlResultSetMapper\Tests\Model\BlogPost;
 use DBorsatto\SqlResultSetMapper\Tests\Model\Email;
@@ -30,8 +31,11 @@ class MapperTest extends TestCase
                 Map::property('title', 'blogPostTitle'),
                 Map::property('body', 'blogPostBody'),
             ]),
-            Map::relation('sessions', Session::class, 'sessionId', [
+            Map::multipleRelation('sessions', Session::class, 'sessionId', [
                 Map::datetimeImmutableProperty('expiresAt', 'sessionExpiresAt'),
+            ]),
+            Map::singleRelation('address', Address::class, 'addressId', [
+                Map::property('description', 'addressDescription'),
             ]),
         ]);
 
@@ -45,13 +49,13 @@ class MapperTest extends TestCase
             ], [
                 new Session(new DateTimeImmutable('2022-02-23 16:00:00')),
                 new Session(new DateTimeImmutable('2022-02-25 16:00:00')),
-            ]),
+            ], null),
             new Author(2, 'Jane', new Email('jane.smith@example.com'), [], [
                 new Session(new DateTimeImmutable('2022-02-27 16:00:00')),
-            ]),
+            ], new Address('Rome, Italy')),
             new Author(3, 'Jimmy', null, [
                 new BlogPost('What a title', 'What a body'),
-            ], []),
+            ], [], new Address('Paris, France')),
         ];
 
         $sqlResultSetRows = [
@@ -64,6 +68,8 @@ class MapperTest extends TestCase
                 'blogPostBody' => 'Some body',
                 'sessionId' => 1,
                 'sessionExpiresAt' => '2022-02-23 16:00:00',
+                'addressId' => null,
+                'addressDescription' => null,
             ],
             [
                 'userId' => 1,
@@ -74,6 +80,8 @@ class MapperTest extends TestCase
                 'blogPostBody' => 'Another body',
                 'sessionId' => 1,
                 'sessionExpiresAt' => '2022-02-23 16:00:00',
+                'addressId' => null,
+                'addressDescription' => null,
             ],
             [
                 'userId' => 1,
@@ -84,6 +92,8 @@ class MapperTest extends TestCase
                 'blogPostBody' => 'Some other body',
                 'sessionId' => 1,
                 'sessionExpiresAt' => '2022-02-23 16:00:00',
+                'addressId' => null,
+                'addressDescription' => null,
             ],
             [
                 'userId' => 1,
@@ -94,6 +104,8 @@ class MapperTest extends TestCase
                 'blogPostBody' => 'Some body',
                 'sessionId' => 2,
                 'sessionExpiresAt' => '2022-02-25 16:00:00',
+                'addressId' => null,
+                'addressDescription' => null,
             ],
             [
                 'userId' => 1,
@@ -104,6 +116,8 @@ class MapperTest extends TestCase
                 'blogPostBody' => 'Another body',
                 'sessionId' => 2,
                 'sessionExpiresAt' => '2022-02-25 16:00:00',
+                'addressId' => null,
+                'addressDescription' => null,
             ],
             [
                 'userId' => 1,
@@ -114,6 +128,8 @@ class MapperTest extends TestCase
                 'blogPostBody' => 'Some other body',
                 'sessionId' => 2,
                 'sessionExpiresAt' => '2022-02-25 16:00:00',
+                'addressId' => null,
+                'addressDescription' => null,
             ],
             [
                 'userId' => 2,
@@ -124,6 +140,8 @@ class MapperTest extends TestCase
                 'blogPostBody' => null,
                 'sessionId' => 4,
                 'sessionExpiresAt' => '2022-02-27 16:00:00',
+                'addressId' => 1,
+                'addressDescription' => 'Rome, Italy',
             ],
             [
                 'userId' => 3,
@@ -134,6 +152,8 @@ class MapperTest extends TestCase
                 'blogPostBody' => 'What a body',
                 'sessionId' => null,
                 'sessionExpiresAt' => null,
+                'addressId' => 2,
+                'addressDescription' => 'Paris, France',
             ],
         ];
 

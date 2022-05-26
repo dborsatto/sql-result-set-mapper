@@ -17,18 +17,26 @@ class Author
      * @var list<Session>
      */
     private array $sessions;
+    private ?Address $address;
 
     /**
      * @param list<BlogPost> $blogPosts
      * @param list<Session>  $sessions
      */
-    public function __construct(int $id, string $firstName, ?Email $email, array $blogPosts, array $sessions)
-    {
+    public function __construct(
+        int $id,
+        string $firstName,
+        ?Email $email,
+        array $blogPosts,
+        array $sessions,
+        ?Address $address
+    ) {
         $this->id = $id;
         $this->firstName = $firstName;
         $this->email = $email;
         $this->blogPosts = $blogPosts;
         $this->sessions = $sessions;
+        $this->address = $address;
     }
 
     public function getId(): int
@@ -60,5 +68,10 @@ class Author
     public function getSessions(): array
     {
         return $this->sessions;
+    }
+
+    public function getAddress(): ?Address
+    {
+        return $this->address;
     }
 }

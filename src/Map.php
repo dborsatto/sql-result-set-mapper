@@ -41,6 +41,32 @@ class Map
         return new RelationMapping($objectProperty, $targetClass, $resultSetIdColumn, $mappings);
     }
 
+    /**
+     * @param class-string           $targetClass
+     * @param list<MappingInterface> $mappings
+     */
+    public static function multipleRelation(
+        string $objectProperty,
+        string $targetClass,
+        string $resultSetIdColumn,
+        array $mappings
+    ): RelationMapping {
+        return RelationMapping::multiple($objectProperty, $targetClass, $resultSetIdColumn, $mappings);
+    }
+
+    /**
+     * @param class-string           $targetClass
+     * @param list<MappingInterface> $mappings
+     */
+    public static function singleRelation(
+        string $objectProperty,
+        string $targetClass,
+        string $resultSetIdColumn,
+        array $mappings
+    ): RelationMapping {
+        return RelationMapping::single($objectProperty, $targetClass, $resultSetIdColumn, $mappings);
+    }
+
     public static function property(
         string $objectProperty,
         string $resultSetColumn,
