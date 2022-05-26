@@ -22,8 +22,11 @@ class NormalizerTest extends TestCase
                 Map::property('title', 'blogPostTitle'),
                 Map::property('body', 'blogPostBody'),
             ]),
-            Map::relation('sessions', stdClass::class, 'sessionId', [
+            Map::multipleRelation('sessions', stdClass::class, 'sessionId', [
                 Map::property('expiresAt', 'sessionExpiresAt'),
+            ]),
+            Map::singleRelation('address', stdClass::class, 'addressId', [
+                Map::property('description', 'addressDescription'),
             ]),
         ]);
 
@@ -36,6 +39,8 @@ class NormalizerTest extends TestCase
                 'blogPostBody' => 'Some body',
                 'sessionId' => 1,
                 'sessionExpiresAt' => '2022-02-23 16:00:00',
+                'addressId' => null,
+                'addressDescription' => null,
             ],
             [
                 'userId' => 1,
@@ -45,6 +50,8 @@ class NormalizerTest extends TestCase
                 'blogPostBody' => 'Another body',
                 'sessionId' => 1,
                 'sessionExpiresAt' => '2022-02-23 16:00:00',
+                'addressId' => null,
+                'addressDescription' => null,
             ],
             [
                 'userId' => 1,
@@ -54,6 +61,8 @@ class NormalizerTest extends TestCase
                 'blogPostBody' => 'Some other body',
                 'sessionId' => 1,
                 'sessionExpiresAt' => '2022-02-23 16:00:00',
+                'addressId' => null,
+                'addressDescription' => null,
             ],
             [
                 'userId' => 1,
@@ -63,6 +72,8 @@ class NormalizerTest extends TestCase
                 'blogPostBody' => 'Some body',
                 'sessionId' => 2,
                 'sessionExpiresAt' => '2022-02-25 16:00:00',
+                'addressId' => null,
+                'addressDescription' => null,
             ],
             [
                 'userId' => 1,
@@ -72,6 +83,8 @@ class NormalizerTest extends TestCase
                 'blogPostBody' => 'Another body',
                 'sessionId' => 2,
                 'sessionExpiresAt' => '2022-02-25 16:00:00',
+                'addressId' => null,
+                'addressDescription' => null,
             ],
             [
                 'userId' => 1,
@@ -81,6 +94,8 @@ class NormalizerTest extends TestCase
                 'blogPostBody' => 'Some other body',
                 'sessionId' => 2,
                 'sessionExpiresAt' => '2022-02-25 16:00:00',
+                'addressId' => null,
+                'addressDescription' => null,
             ],
             [
                 'userId' => 2,
@@ -90,6 +105,8 @@ class NormalizerTest extends TestCase
                 'blogPostBody' => null,
                 'sessionId' => 4,
                 'sessionExpiresAt' => '2022-02-27 16:00:00',
+                'addressId' => 1,
+                'addressDescription' => 'Rome, Italy',
             ],
             [
                 'userId' => 3,
@@ -99,6 +116,8 @@ class NormalizerTest extends TestCase
                 'blogPostBody' => 'What a body',
                 'sessionId' => null,
                 'sessionExpiresAt' => null,
+                'addressId' => 2,
+                'addressDescription' => 'Paris, France',
             ],
         ];
 
@@ -130,6 +149,7 @@ class NormalizerTest extends TestCase
                         'expiresAt' => '2022-02-25 16:00:00',
                     ],
                 ],
+                'address' => null,
             ],
             [
                 'id' => 2,
@@ -139,6 +159,9 @@ class NormalizerTest extends TestCase
                     [
                         'expiresAt' => '2022-02-27 16:00:00',
                     ],
+                ],
+                'address' => [
+                    'description' => 'Rome, Italy',
                 ],
             ],
             [
@@ -151,6 +174,9 @@ class NormalizerTest extends TestCase
                     ],
                 ],
                 'sessions' => [],
+                'address' => [
+                    'description' => 'Paris, France',
+                ],
             ],
         ];
 

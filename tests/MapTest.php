@@ -27,6 +27,12 @@ class MapTest extends TestCase
             Map::relation('relationProperty', stdClass::class, 'relationColumnId', [
                 Map::property('relationObjectProperty', 'relationPropertyColumn'),
             ]),
+            Map::multipleRelation('multipleRelationProperty', stdClass::class, 'multipleRelationColumnId', [
+                Map::property('multipleRelationObjectProperty', 'multipleRelationPropertyColumn'),
+            ]),
+            Map::singleRelation('singleRelationProperty', stdClass::class, 'singleRelationColumnId', [
+                Map::property('singleRelationObjectProperty', 'singleRelationPropertyColumn'),
+            ]),
         ]);
 
         $this->assertSame(stdClass::class, $mapping->getTargetClass());
@@ -57,7 +63,8 @@ class MapTest extends TestCase
         $this->assertEquals(new DateTime('2022-03-31 09:45:15'), $closure('2022-03-31 09:45:15'));
 
         $relationMappings = $mapping->getRelationMappings();
-        $this->assertCount(1, $relationMappings);
+        $this->assertCount(3, $relationMappings);
+
         $relationMapping = $relationMappings[0];
         $this->assertSame('relationProperty', $relationMapping->getObjectProperty());
         $this->assertSame(stdClass::class, $relationMapping->getTargetClass());
@@ -68,5 +75,27 @@ class MapTest extends TestCase
         $this->assertSame('relationObjectProperty', $relationPropertyMappings[0]->getObjectProperty());
         $this->assertSame('relationPropertyColumn', $relationPropertyMappings[0]->getResultSetColumn());
         $this->assertNull($relationPropertyMappings[0]->getConversionClosure());
+
+        $multipleRelationMapping = $relationMappings[1];
+        $this->assertSame('multipleRelationProperty', $multipleRelationMapping->getObjectProperty());
+        $this->assertSame(stdClass::class, $multipleRelationMapping->getTargetClass());
+
+        $this->assertCount(0, $multipleRelationMapping->getRelationMappings());
+        $multipleRelationPropertyMappings = $multipleRelationMapping->getPropertyMappings();
+        $this->assertCount(1, $multipleRelationPropertyMappings);
+        $this->assertSame('multipleRelationObjectProperty', $multipleRelationPropertyMappings[0]->getObjectProperty());
+        $this->assertSame('multipleRelationPropertyColumn', $multipleRelationPropertyMappings[0]->getResultSetColumn());
+        $this->assertNull($multipleRelationPropertyMappings[0]->getConversionClosure());
+
+        $singleRelationMapping = $relationMappings[2];
+        $this->assertSame('singleRelationProperty', $singleRelationMapping->getObjectProperty());
+        $this->assertSame(stdClass::class, $singleRelationMapping->getTargetClass());
+
+        $this->assertCount(0, $singleRelationMapping->getRelationMappings());
+        $singleRelationPropertyMappings = $singleRelationMapping->getPropertyMappings();
+        $this->assertCount(1, $singleRelationPropertyMappings);
+        $this->assertSame('singleRelationObjectProperty', $singleRelationPropertyMappings[0]->getObjectProperty());
+        $this->assertSame('singleRelationPropertyColumn', $singleRelationPropertyMappings[0]->getResultSetColumn());
+        $this->assertNull($singleRelationPropertyMappings[0]->getConversionClosure());
     }
 }

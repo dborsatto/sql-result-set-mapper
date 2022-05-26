@@ -20,6 +20,7 @@ class RelationMapping implements ClassMappingInterface
      * @var list<MappingInterface>
      */
     private array $mappings;
+    private bool $isMultiple;
 
     /**
      * @param class-string           $targetClass
@@ -29,12 +30,40 @@ class RelationMapping implements ClassMappingInterface
         string $objectProperty,
         string $targetClass,
         string $resultSetIdColumn,
-        array $mappings
+        array $mappings,
+        bool $isMultiple = true
     ) {
         $this->objectProperty = $objectProperty;
         $this->targetClass = $targetClass;
         $this->resultSetIdColumn = $resultSetIdColumn;
         $this->mappings = $mappings;
+        $this->isMultiple = $isMultiple;
+    }
+
+    /**
+     * @param class-string           $targetClass
+     * @param list<MappingInterface> $mappings
+     */
+    public static function single(
+        string $objectProperty,
+        string $targetClass,
+        string $resultSetIdColumn,
+        array $mappings
+    ): self {
+        return new self($objectProperty, $targetClass, $resultSetIdColumn, $mappings, false);
+    }
+
+    /**
+     * @param class-string           $targetClass
+     * @param list<MappingInterface> $mappings
+     */
+    public static function multiple(
+        string $objectProperty,
+        string $targetClass,
+        string $resultSetIdColumn,
+        array $mappings
+    ): self {
+        return new self($objectProperty, $targetClass, $resultSetIdColumn, $mappings, true);
     }
 
     public function getObjectProperty(): string
@@ -66,5 +95,10 @@ class RelationMapping implements ClassMappingInterface
             $this->mappings,
             static fn (MappingInterface $mapping): bool => $mapping instanceof PropertyMapping,
         ));
+    }
+
+    public function isMultiple(): bool
+    {
+        return $this->isMultiple;
     }
 }
