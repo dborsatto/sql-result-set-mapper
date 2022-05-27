@@ -60,9 +60,7 @@ class LaminasHydrator implements HydratorInterface
 
             $hydrator->addStrategy($relationMapping->getObjectProperty(), $strategy);
 
-            if ($relationMapping->isMultiple()) {
-                $this->configureHydrator($relationHydrator, $relationMapping);
-            }
+            $this->configureHydrator($relationHydrator, $relationMapping);
         }
     }
 }
