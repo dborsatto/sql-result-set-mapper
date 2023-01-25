@@ -12,7 +12,7 @@ class SqlResultSetCouldNotBeNormalizedBecauseItIsMissingConfiguredPropertyColumn
     {
         return new self(sprintf(
             'Sql result set could not be normalized because it is missing configured property column "%s".',
-            $columnName
+            $columnName,
         ));
     }
 }
