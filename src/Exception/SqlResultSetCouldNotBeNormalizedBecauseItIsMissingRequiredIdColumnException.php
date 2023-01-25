@@ -12,7 +12,7 @@ class SqlResultSetCouldNotBeNormalizedBecauseItIsMissingRequiredIdColumnExceptio
     {
         return new self(sprintf(
             'Sql result set could not be normalized because it is missing required id column "%s".',
-            $idColumn
+            $idColumn,
         ));
     }
 }
