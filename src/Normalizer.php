@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace DBorsatto\SqlResultSetMapper;
 
-use DBorsatto\SqlResultSetMapper\Configuration\ClassMappingInterface;
-use DBorsatto\SqlResultSetMapper\Configuration\RootMapping;
+use DBorsatto\SqlResultSetMapper\Configuration\ClassMapping;
 use DBorsatto\SqlResultSetMapper\Exception\SqlResultSetCouldNotBeNormalizedBecauseItIsMissingConfiguredPropertyColumnException;
 use DBorsatto\SqlResultSetMapper\Exception\SqlResultSetCouldNotBeNormalizedBecauseItIsMissingRequiredIdColumnException;
 use function array_key_exists;
@@ -17,16 +16,16 @@ use function array_values;
 class Normalizer
 {
     /**
-     * @var RootMapping<T>
+     * @var ClassMapping<T>
      */
-    private RootMapping $rootMapping;
+    private ClassMapping $classMapping;
 
     /**
-     * @param RootMapping<T> $rootMapping
+     * @param ClassMapping<T> $classMapping
      */
-    public function __construct(RootMapping $rootMapping)
+    public function __construct(ClassMapping $classMapping)
     {
-        $this->rootMapping = $rootMapping;
+        $this->classMapping = $classMapping;
     }
 
     /**
@@ -39,7 +38,7 @@ class Normalizer
      */
     public function normalize(array $sqlResultSetRows): array
     {
-        return $this->normalizeWithMapping($sqlResultSetRows, $this->rootMapping);
+        return $this->normalizeWithMapping($sqlResultSetRows, $this->classMapping);
     }
 
     /**
@@ -53,7 +52,7 @@ class Normalizer
      */
     private function normalizeWithMapping(
         array $sqlResultSetRows,
-        ClassMappingInterface $classMapping,
+        ClassMapping $classMapping,
         array $currentIds = []
     ): array {
         $dataForCurrentConfiguration = [];
@@ -92,7 +91,7 @@ class Normalizer
             foreach ($classMapping->getRelationMappings() as $relationMapping) {
                 $extractedRowDataForRelation = $this->normalizeWithMapping(
                     $this->filterSqlResultSetRows($sqlResultSetRows, $currentIndex, $currentIds),
-                    $relationMapping,
+                    $relationMapping->getClassMapping(),
                     $currentIds,
                 );
 
@@ -115,7 +114,7 @@ class Normalizer
      *
      * @return int|string|null
      */
-    private function getRowId(array $sqlResultSetRow, ClassMappingInterface $classMapping)
+    private function getRowId(array $sqlResultSetRow, ClassMapping $classMapping)
     {
         $configurationIdColumn = $classMapping->getResultSetIdColumn();
         if (!array_key_exists($configurationIdColumn, $sqlResultSetRow)) {

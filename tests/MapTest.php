@@ -6,6 +6,7 @@ namespace DBorsatto\SqlResultSetMapper\Tests;
 
 use DateTime;
 use DateTimeImmutable;
+use DBorsatto\SqlResultSetMapper\Configuration\PropertyMappingConverterInterface;
 use DBorsatto\SqlResultSetMapper\Map;
 use DBorsatto\SqlResultSetMapper\Tests\Model\Email;
 use PHPUnit\Framework\TestCase;
@@ -14,19 +15,20 @@ use function is_string;
 
 class MapTest extends TestCase
 {
+    /**
+     * @psalm-suppress MissingThrowsDocblock
+     */
     public function testMappings(): void
     {
-        $mapping = Map::root(stdClass::class, 'idColumn', [
-            Map::property(
-                'objectProperty',
-                'propertyColumn',
+        $mapping = Map::create(stdClass::class, 'idColumn', [
+            Map::property('objectProperty', 'propertyColumn'),
+            Map::propertyConversion(
+                'objectPropertyWithConversion',
+                'propertyColumnWithConversion',
                 static fn (?string $value): ?Email => is_string($value) ? new Email($value) : null,
             ),
             Map::datetimeImmutableProperty('datetimeImmutableProperty', 'datetimeImmutableColumn'),
             Map::datetimeProperty('datetimeProperty', 'datetimeColumn'),
-            Map::relation('relationProperty', stdClass::class, 'relationColumnId', [
-                Map::property('relationObjectProperty', 'relationPropertyColumn'),
-            ]),
             Map::multipleRelation('multipleRelationProperty', stdClass::class, 'multipleRelationColumnId', [
                 Map::property('multipleRelationObjectProperty', 'multipleRelationPropertyColumn'),
             ]),
@@ -39,63 +41,60 @@ class MapTest extends TestCase
         $this->assertSame('idColumn', $mapping->getResultSetIdColumn());
 
         $propertyMappings = $mapping->getPropertyMappings();
-        $this->assertCount(3, $propertyMappings);
+        $this->assertCount(4, $propertyMappings);
 
-        $this->assertSame('objectProperty', $propertyMappings[0]->getObjectProperty());
-        $this->assertSame('propertyColumn', $propertyMappings[0]->getResultSetColumn());
-        $closure = $propertyMappings[0]->getConversionClosure();
-        $this->assertNotNull($closure);
-        $this->assertNull($closure(null));
-        $this->assertEquals(new Email('email@example.com'), $closure('email@example.com'));
+        $propertyMapping = $propertyMappings[0];
+        $this->assertSame('objectProperty', $propertyMapping->getObjectProperty());
+        $this->assertSame('propertyColumn', $propertyMapping->getResultSetColumn());
+        $this->assertNotInstanceOf(PropertyMappingConverterInterface::class, $propertyMapping);
 
-        $this->assertSame('datetimeImmutableProperty', $propertyMappings[1]->getObjectProperty());
-        $this->assertSame('datetimeImmutableColumn', $propertyMappings[1]->getResultSetColumn());
-        $closure = $propertyMappings[1]->getConversionClosure();
-        $this->assertNotNull($closure);
-        $this->assertNull($closure(null));
-        $this->assertEquals(new DateTimeImmutable('2022-03-31 09:45:10'), $closure('2022-03-31 09:45:10'));
+        $propertyMapping = $propertyMappings[1];
+        $this->assertSame('objectPropertyWithConversion', $propertyMapping->getObjectProperty());
+        $this->assertSame('propertyColumnWithConversion', $propertyMapping->getResultSetColumn());
+        $this->assertInstanceOf(PropertyMappingConverterInterface::class, $propertyMapping);
+        /** @var PropertyMappingConverterInterface $propertyMapping */
+        $this->assertNull($propertyMapping->convert(null));
+        $this->assertEquals(new Email('email@example.com'), $propertyMapping->convert('email@example.com'));
 
-        $this->assertSame('datetimeProperty', $propertyMappings[2]->getObjectProperty());
-        $this->assertSame('datetimeColumn', $propertyMappings[2]->getResultSetColumn());
-        $closure = $propertyMappings[2]->getConversionClosure();
-        $this->assertNotNull($closure);
-        $this->assertNull($closure(null));
-        $this->assertEquals(new DateTime('2022-03-31 09:45:15'), $closure('2022-03-31 09:45:15'));
+        $propertyMapping = $propertyMappings[2];
+        $this->assertSame('datetimeImmutableProperty', $propertyMapping->getObjectProperty());
+        $this->assertSame('datetimeImmutableColumn', $propertyMapping->getResultSetColumn());
+        $this->assertInstanceOf(PropertyMappingConverterInterface::class, $propertyMapping);
+        /** @var PropertyMappingConverterInterface $propertyMapping */
+        $this->assertNull($propertyMapping->convert(null));
+        $this->assertEquals(new DateTimeImmutable('2022-03-31 09:45:10'), $propertyMapping->convert('2022-03-31 09:45:10'));
+
+        $propertyMapping = $propertyMappings[3];
+        $this->assertSame('datetimeProperty', $propertyMapping->getObjectProperty());
+        $this->assertSame('datetimeColumn', $propertyMapping->getResultSetColumn());
+        $this->assertInstanceOf(PropertyMappingConverterInterface::class, $propertyMapping);
+        /** @var PropertyMappingConverterInterface $propertyMapping */
+        $this->assertNull($propertyMapping->convert(null));
+        $this->assertEquals(new DateTime('2022-03-31 09:45:15'), $propertyMapping->convert('2022-03-31 09:45:15'));
 
         $relationMappings = $mapping->getRelationMappings();
-        $this->assertCount(3, $relationMappings);
+        $this->assertCount(2, $relationMappings);
 
-        $relationMapping = $relationMappings[0];
-        $this->assertSame('relationProperty', $relationMapping->getObjectProperty());
-        $this->assertSame(stdClass::class, $relationMapping->getTargetClass());
-
-        $this->assertCount(0, $relationMapping->getRelationMappings());
-        $relationPropertyMappings = $relationMapping->getPropertyMappings();
-        $this->assertCount(1, $relationPropertyMappings);
-        $this->assertSame('relationObjectProperty', $relationPropertyMappings[0]->getObjectProperty());
-        $this->assertSame('relationPropertyColumn', $relationPropertyMappings[0]->getResultSetColumn());
-        $this->assertNull($relationPropertyMappings[0]->getConversionClosure());
-
-        $multipleRelationMapping = $relationMappings[1];
+        $multipleRelationMapping = $relationMappings[0];
         $this->assertSame('multipleRelationProperty', $multipleRelationMapping->getObjectProperty());
-        $this->assertSame(stdClass::class, $multipleRelationMapping->getTargetClass());
-
-        $this->assertCount(0, $multipleRelationMapping->getRelationMappings());
-        $multipleRelationPropertyMappings = $multipleRelationMapping->getPropertyMappings();
+        $multipleRelationClassMapping = $multipleRelationMapping->getClassMapping();
+        $this->assertSame(stdClass::class, $multipleRelationClassMapping->getTargetClass());
+        $this->assertCount(0, $multipleRelationClassMapping->getRelationMappings());
+        $multipleRelationPropertyMappings = $multipleRelationClassMapping->getPropertyMappings();
         $this->assertCount(1, $multipleRelationPropertyMappings);
         $this->assertSame('multipleRelationObjectProperty', $multipleRelationPropertyMappings[0]->getObjectProperty());
         $this->assertSame('multipleRelationPropertyColumn', $multipleRelationPropertyMappings[0]->getResultSetColumn());
-        $this->assertNull($multipleRelationPropertyMappings[0]->getConversionClosure());
+        $this->assertNotInstanceOf(PropertyMappingConverterInterface::class, $multipleRelationPropertyMappings[0]);
 
-        $singleRelationMapping = $relationMappings[2];
+        $singleRelationMapping = $relationMappings[1];
         $this->assertSame('singleRelationProperty', $singleRelationMapping->getObjectProperty());
-        $this->assertSame(stdClass::class, $singleRelationMapping->getTargetClass());
-
-        $this->assertCount(0, $singleRelationMapping->getRelationMappings());
-        $singleRelationPropertyMappings = $singleRelationMapping->getPropertyMappings();
+        $singleRelationClassMapping = $singleRelationMapping->getClassMapping();
+        $this->assertSame(stdClass::class, $singleRelationClassMapping->getTargetClass());
+        $this->assertCount(0, $singleRelationClassMapping->getRelationMappings());
+        $singleRelationPropertyMappings = $singleRelationClassMapping->getPropertyMappings();
         $this->assertCount(1, $singleRelationPropertyMappings);
         $this->assertSame('singleRelationObjectProperty', $singleRelationPropertyMappings[0]->getObjectProperty());
         $this->assertSame('singleRelationPropertyColumn', $singleRelationPropertyMappings[0]->getResultSetColumn());
-        $this->assertNull($singleRelationPropertyMappings[0]->getConversionClosure());
+        $this->assertNotInstanceOf(PropertyMappingConverterInterface::class, $singleRelationPropertyMappings[0]);
     }
 }

@@ -43,13 +43,13 @@ $sql = <<<'SQL'
 
 $mapper = new Mapper();
 
-$mapping = Map::root(AuthorReadModel::class, 'id', [
+$mapping = Map::create(AuthorReadModel::class, 'id', [
     Map::property('id', 'authorId'),
     Map::property('name', 'authorName'),
-    Map::property('email', 'authorEmail', static function (string $email): Email {
+    Map::propertyConversion('email', 'authorEmail', static function (string $email): Email {
         return new Email($email);
     }),
-    Map::relation('blogPosts', BlogPostReadModel::class, 'blogPostId', [
+    Map::multipleRelation('blogPosts', BlogPostReadModel::class, 'blogPostId', [
         Map::property('title', 'blogPostTitle'),
         Map::property('body', 'blogPostBody'),
     ]),

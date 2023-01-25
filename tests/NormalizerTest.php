@@ -13,6 +13,9 @@ use stdClass;
 
 class NormalizerTest extends TestCase
 {
+    /**
+     * @psalm-suppress MissingThrowsDocblock
+     */
     public function testNormalization(): void
     {
         $mapping = DataSet::getMapping();
@@ -26,11 +29,14 @@ class NormalizerTest extends TestCase
         $this->assertSame($expected, $normalizer->normalize($sqlResultSetRows));
     }
 
+    /**
+     * @psalm-suppress MissingThrowsDocblock
+     */
     public function testMissingIdColumn(): void
     {
         $this->expectException(SqlResultSetCouldNotBeNormalizedBecauseItIsMissingRequiredIdColumnException::class);
 
-        $mapping = Map::root(stdClass::class, 'userId', []);
+        $mapping = Map::create(stdClass::class, 'userId', []);
 
         $sqlResultSetRows = [
             [
@@ -42,11 +48,14 @@ class NormalizerTest extends TestCase
         $normalizer->normalize($sqlResultSetRows);
     }
 
+    /**
+     * @psalm-suppress MissingThrowsDocblock
+     */
     public function testMissingPropertyColumn(): void
     {
         $this->expectException(SqlResultSetCouldNotBeNormalizedBecauseItIsMissingConfiguredPropertyColumnException::class);
 
-        $mapping = Map::root(stdClass::class, 'userId', [
+        $mapping = Map::create(stdClass::class, 'userId', [
             Map::property('', 'userFirstName'),
         ]);
 

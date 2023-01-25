@@ -5,45 +5,37 @@ declare(strict_types=1);
 namespace DBorsatto\SqlResultSetMapper;
 
 use Closure;
-use DateTime;
-use DateTimeImmutable;
-use DBorsatto\SqlResultSetMapper\Configuration\MappingInterface;
+use DBorsatto\SmartEnums\EnumInterface;
+use DBorsatto\SqlResultSetMapper\Bridge\SmartEnums\EnumPropertiesMapping;
+use DBorsatto\SqlResultSetMapper\Bridge\SmartEnums\EnumPropertyMapping;
+use DBorsatto\SqlResultSetMapper\Configuration\Base\DateTimeImmutablePropertyMapping;
+use DBorsatto\SqlResultSetMapper\Configuration\Base\DateTimePropertyMapping;
+use DBorsatto\SqlResultSetMapper\Configuration\ClassMapping;
+use DBorsatto\SqlResultSetMapper\Configuration\ClosurePropertyMapping;
 use DBorsatto\SqlResultSetMapper\Configuration\PropertyMapping;
 use DBorsatto\SqlResultSetMapper\Configuration\RelationMapping;
-use DBorsatto\SqlResultSetMapper\Configuration\RootMapping;
-use function is_string;
 
 class Map
 {
     /**
      * @template T of object
      *
-     * @param class-string<T>        $targetClass
-     * @param list<MappingInterface> $mappings
+     * @param class-string<T>                       $targetClass
+     * @param list<RelationMapping|PropertyMapping> $mappings
      *
-     * @return RootMapping<T>
+     * @return ClassMapping<T>
      */
-    public static function root(string $targetClass, string $resultSetIdColumn, array $mappings): RootMapping
-    {
-        return new RootMapping($targetClass, $resultSetIdColumn, $mappings);
-    }
-
-    /**
-     * @param class-string           $targetClass
-     * @param list<MappingInterface> $mappings
-     */
-    public static function relation(
-        string $objectProperty,
+    public static function create(
         string $targetClass,
         string $resultSetIdColumn,
         array $mappings
-    ): RelationMapping {
-        return new RelationMapping($objectProperty, $targetClass, $resultSetIdColumn, $mappings);
+    ): ClassMapping {
+        return new ClassMapping($targetClass, $resultSetIdColumn, $mappings);
     }
 
     /**
-     * @param class-string           $targetClass
-     * @param list<MappingInterface> $mappings
+     * @param class-string                          $targetClass
+     * @param list<RelationMapping|PropertyMapping> $mappings
      */
     public static function multipleRelation(
         string $objectProperty,
@@ -51,12 +43,15 @@ class Map
         string $resultSetIdColumn,
         array $mappings
     ): RelationMapping {
-        return RelationMapping::multiple($objectProperty, $targetClass, $resultSetIdColumn, $mappings);
+        return RelationMapping::multiple(
+            $objectProperty,
+            new ClassMapping($targetClass, $resultSetIdColumn, $mappings),
+        );
     }
 
     /**
-     * @param class-string           $targetClass
-     * @param list<MappingInterface> $mappings
+     * @param class-string                          $targetClass
+     * @param list<RelationMapping|PropertyMapping> $mappings
      */
     public static function singleRelation(
         string $objectProperty,
@@ -64,36 +59,91 @@ class Map
         string $resultSetIdColumn,
         array $mappings
     ): RelationMapping {
-        return RelationMapping::single($objectProperty, $targetClass, $resultSetIdColumn, $mappings);
+        return RelationMapping::single(
+            $objectProperty,
+            new ClassMapping($targetClass, $resultSetIdColumn, $mappings),
+        );
     }
 
-    public static function property(
+    public static function property(string $objectProperty, string $resultSetColumn): PropertyMapping
+    {
+        return new PropertyMapping($objectProperty, $resultSetColumn);
+    }
+
+    /**
+     * @template T
+     *
+     * @param Closure(string|null): T $closure
+     */
+    public static function propertyConversion(
         string $objectProperty,
         string $resultSetColumn,
-        Closure $conversionClosure = null
-    ): PropertyMapping {
-        return new PropertyMapping($objectProperty, $resultSetColumn, $conversionClosure);
+        Closure $closure
+    ): ClosurePropertyMapping {
+        return new ClosurePropertyMapping($objectProperty, $resultSetColumn, $closure);
     }
 
     public static function datetimeImmutableProperty(
         string $objectProperty,
         string $resultSetColumn
-    ): PropertyMapping {
-        return new PropertyMapping(
-            $objectProperty,
-            $resultSetColumn,
-            static fn (?string $value): ?DateTimeImmutable => is_string($value) ? new DateTimeImmutable($value) : null,
-        );
+    ): DateTimeImmutablePropertyMapping {
+        return new DateTimeImmutablePropertyMapping($objectProperty, $resultSetColumn);
     }
 
     public static function datetimeProperty(
         string $objectProperty,
         string $resultSetColumn
-    ): PropertyMapping {
-        return new PropertyMapping(
+    ): DateTimePropertyMapping {
+        return new DateTimePropertyMapping($objectProperty, $resultSetColumn);
+    }
+
+    /**
+     * @param class-string<EnumInterface> $enumClass
+     */
+    public static function enumProperty(
+        string $objectProperty,
+        string $resultSetColumn,
+        string $enumClass
+    ): EnumPropertyMapping {
+        return new EnumPropertyMapping($objectProperty, $resultSetColumn, $enumClass);
+    }
+
+    /**
+     * @param class-string<EnumInterface> $enumClass
+     */
+    public static function enumPropertiesSymbolSeparated(
+        string $objectProperty,
+        string $resultSetColumn,
+        string $enumClass,
+        string $symbol = ','
+    ): EnumPropertiesMapping {
+        return EnumPropertiesMapping::fromSymbolSeparatedValues(
             $objectProperty,
             $resultSetColumn,
-            static fn (?string $value): ?DateTime => is_string($value) ? new DateTime($value) : null,
+            $enumClass,
+            $symbol,
         );
+    }
+
+    /**
+     * @param class-string<EnumInterface> $enumClass
+     */
+    public static function enumPropertiesJson(
+        string $objectProperty,
+        string $resultSetColumn,
+        string $enumClass
+    ): EnumPropertiesMapping {
+        return EnumPropertiesMapping::fromJsonList($objectProperty, $resultSetColumn, $enumClass);
+    }
+
+    /**
+     * @param class-string<EnumInterface> $enumClass
+     */
+    public static function enumPropertiesSerialized(
+        string $objectProperty,
+        string $resultSetColumn,
+        string $enumClass
+    ): EnumPropertiesMapping {
+        return EnumPropertiesMapping::fromSerializedArray($objectProperty, $resultSetColumn, $enumClass);
     }
 }
