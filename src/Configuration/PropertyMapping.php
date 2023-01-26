@@ -4,19 +4,15 @@ declare(strict_types=1);
 
 namespace DBorsatto\SqlResultSetMapper\Configuration;
 
-use Closure;
-
-class PropertyMapping implements MappingInterface
+class PropertyMapping
 {
     private string $objectProperty;
     private string $resultSetColumn;
-    private ?Closure $conversionClosure;
 
-    public function __construct(string $objectProperty, string $resultSetColumn, Closure $conversionClosure = null)
+    public function __construct(string $objectProperty, string $resultSetColumn)
     {
         $this->objectProperty = $objectProperty;
         $this->resultSetColumn = $resultSetColumn;
-        $this->conversionClosure = $conversionClosure;
     }
 
     public function getObjectProperty(): string
@@ -27,10 +23,5 @@ class PropertyMapping implements MappingInterface
     public function getResultSetColumn(): string
     {
         return $this->resultSetColumn;
-    }
-
-    public function getConversionClosure(): ?Closure
-    {
-        return $this->conversionClosure;
     }
 }

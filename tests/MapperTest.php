@@ -9,6 +9,9 @@ use PHPUnit\Framework\TestCase;
 
 class MapperTest extends TestCase
 {
+    /**
+     * @psalm-suppress MissingThrowsDocblock
+     */
     public function testMapping(): void
     {
         $mapping = DataSet::getMapping();

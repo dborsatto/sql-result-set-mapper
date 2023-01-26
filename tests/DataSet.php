@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace DBorsatto\SqlResultSetMapper\Tests;
 
 use DateTimeImmutable;
-use DBorsatto\SqlResultSetMapper\Bridge\SmartEnums\EnumPropertiesMapping;
-use DBorsatto\SqlResultSetMapper\Bridge\SmartEnums\EnumPropertyMapping;
-use DBorsatto\SqlResultSetMapper\Configuration\RootMapping;
+use DBorsatto\SqlResultSetMapper\Configuration\ClassMapping;
 use DBorsatto\SqlResultSetMapper\Map;
 use DBorsatto\SqlResultSetMapper\Tests\Model\Address;
 use DBorsatto\SqlResultSetMapper\Tests\Model\AddressCoordinates;
@@ -22,19 +20,19 @@ use function is_string;
 class DataSet
 {
     /**
-     * @return RootMapping<Author>
+     * @return ClassMapping<Author>
      */
-    public static function getMapping(): RootMapping
+    public static function getMapping(): ClassMapping
     {
-        return Map::root(Author::class, 'userId', [
+        return Map::create(Author::class, 'userId', [
             Map::property('id', 'userId'),
             Map::property('firstName', 'userFirstName'),
-            Map::property(
+            Map::propertyConversion(
                 'email',
                 'userEmail',
                 static fn (?string $value): ?Email => is_string($value) ? new Email($value) : null,
             ),
-            Map::relation('blogPosts', BlogPost::class, 'blogPostId', [
+            Map::multipleRelation('blogPosts', BlogPost::class, 'blogPostId', [
                 Map::property('title', 'blogPostTitle'),
                 Map::property('body', 'blogPostBody'),
             ]),
@@ -51,10 +49,10 @@ class DataSet
                     Map::property('latitude', 'addressCoordinatesLatitude'),
                 ]),
             ]),
-            new EnumPropertyMapping('enumValue', 'enumValue', ConcreteEnum::class),
-            EnumPropertiesMapping::fromSerializedArray('enumSerializedArray', 'enumSerializedArray', ConcreteEnum::class),
-            EnumPropertiesMapping::fromSymbolSeparatedValues('enumSymbolSeparated', 'enumSymbolSeparated', ConcreteEnum::class),
-            EnumPropertiesMapping::fromJsonList('enumJson', 'enumJson', ConcreteEnum::class),
+            Map::enumProperty('enumValue', 'enumValue', ConcreteEnum::class),
+            Map::enumPropertiesSerialized('enumSerializedArray', 'enumSerializedArray', ConcreteEnum::class),
+            Map::enumPropertiesSymbolSeparated('enumSymbolSeparated', 'enumSymbolSeparated', ConcreteEnum::class),
+            Map::enumPropertiesJson('enumJson', 'enumJson', ConcreteEnum::class),
         ]);
     }
 

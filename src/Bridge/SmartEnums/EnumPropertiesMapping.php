@@ -9,10 +9,21 @@ use DBorsatto\SmartEnums\EnumListConverter\EnumListConverterInterface;
 use DBorsatto\SmartEnums\EnumListConverter\JsonEnumListConverter;
 use DBorsatto\SmartEnums\EnumListConverter\SerializedArrayEnumListConverter;
 use DBorsatto\SmartEnums\EnumListConverter\SymbolSeparatedValuesEnumListConverter;
+use DBorsatto\SmartEnums\Exception\SmartEnumExceptionInterface;
 use DBorsatto\SqlResultSetMapper\Configuration\PropertyMapping;
+use DBorsatto\SqlResultSetMapper\Configuration\PropertyMappingConverterInterface;
 
-class EnumPropertiesMapping extends PropertyMapping
+/**
+ * @implements PropertyMappingConverterInterface<list<EnumInterface>>
+ */
+class EnumPropertiesMapping extends PropertyMapping implements PropertyMappingConverterInterface
 {
+    /**
+     * @var class-string<EnumInterface>
+     */
+    private string $enumClass;
+    private EnumListConverterInterface $enumListConverter;
+
     /**
      * @param class-string<EnumInterface> $enumClass
      */
@@ -22,17 +33,10 @@ class EnumPropertiesMapping extends PropertyMapping
         string $enumClass,
         EnumListConverterInterface $enumListConverter
     ) {
-        parent::__construct(
-            $objectProperty,
-            $resultSetColumn,
-            static function (?string $value) use ($enumClass, $enumListConverter): ?array {
-                if ($value === null) {
-                    return null;
-                }
+        parent::__construct($objectProperty, $resultSetColumn);
 
-                return $enumListConverter->convertFromStringToEnumList($enumClass, $value);
-            },
-        );
+        $this->enumClass = $enumClass;
+        $this->enumListConverter = $enumListConverter;
     }
 
     /**
@@ -83,5 +87,17 @@ class EnumPropertiesMapping extends PropertyMapping
             $enumClass,
             new SerializedArrayEnumListConverter(),
         );
+    }
+
+    /**
+     * @throws SmartEnumExceptionInterface
+     */
+    public function convert(?string $value): ?array
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        return $this->enumListConverter->convertFromStringToEnumList($this->enumClass, $value);
     }
 }

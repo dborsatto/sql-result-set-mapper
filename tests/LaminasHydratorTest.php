@@ -9,6 +9,9 @@ use PHPUnit\Framework\TestCase;
 
 class LaminasHydratorTest extends TestCase
 {
+    /**
+     * @psalm-suppress MissingThrowsDocblock
+     */
     public function testHydration(): void
     {
         $items = DataSet::getNormalizedArrayDataSet();
