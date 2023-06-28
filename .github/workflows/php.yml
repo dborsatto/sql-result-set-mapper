@@ -14,7 +14,7 @@ jobs:
             - name: Checkout
               uses: actions/checkout@v2
             - name: Psalm
-              uses: docker://vimeo/psalm-github-actions:5.1.0
+              uses: docker://ghcr.io/psalm/psalm-github-actions
               with:
                   composer_require_dev: true
 
