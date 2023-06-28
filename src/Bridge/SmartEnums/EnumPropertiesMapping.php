@@ -41,6 +41,7 @@ class EnumPropertiesMapping extends PropertyMapping implements PropertyMappingCo
 
     /**
      * @param class-string<EnumInterface> $enumClass
+     * @param non-empty-string            $symbol
      */
     public static function fromSymbolSeparatedValues(
         string $objectProperty,

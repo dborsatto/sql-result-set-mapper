@@ -7,7 +7,7 @@
         "laminas/laminas-hydrator": "^4.0"
     },
     "require-dev": {
-        "dborsatto/smart-enums": "^3.0",
+        "dborsatto/smart-enums": "^4.0",
         "friendsofphp/php-cs-fixer": "^3.8",
         "phpunit/phpunit": "^9.5",
         "psalm/plugin-phpunit": "^0.18",

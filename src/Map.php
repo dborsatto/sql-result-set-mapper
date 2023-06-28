@@ -110,6 +110,7 @@ class Map
 
     /**
      * @param class-string<EnumInterface> $enumClass
+     * @param non-empty-string            $symbol
      */
     public static function enumPropertiesSymbolSeparated(
         string $objectProperty,
