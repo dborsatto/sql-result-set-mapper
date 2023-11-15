@@ -14,21 +14,14 @@ use Closure;
 class ClosurePropertyMapping extends PropertyMapping implements PropertyMappingConverterInterface
 {
     /**
-     * @var Closure(string|null): T
+     * @param Closure(mixed): T $closure
      */
-    private Closure $closure;
-
-    /**
-     * @param Closure(string|null): T $closure
-     */
-    public function __construct(string $objectProperty, string $resultSetColumn, Closure $closure)
+    public function __construct(string $objectProperty, string $resultSetColumn, private Closure $closure)
     {
         parent::__construct($objectProperty, $resultSetColumn);
-
-        $this->closure = $closure;
     }
 
-    public function convert(?string $value)
+    public function convert(mixed $value): mixed
     {
         $closure = $this->closure;
 

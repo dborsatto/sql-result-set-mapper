@@ -16,16 +16,10 @@ use function array_values;
 class Normalizer
 {
     /**
-     * @var ClassMapping<T>
-     */
-    private ClassMapping $classMapping;
-
-    /**
      * @param ClassMapping<T> $classMapping
      */
-    public function __construct(ClassMapping $classMapping)
+    public function __construct(private ClassMapping $classMapping)
     {
-        $this->classMapping = $classMapping;
     }
 
     /**
@@ -53,7 +47,7 @@ class Normalizer
     private function normalizeWithMapping(
         array $sqlResultSetRows,
         ClassMapping $classMapping,
-        array $currentIds = []
+        array $currentIds = [],
     ): array {
         $dataForCurrentConfiguration = [];
 

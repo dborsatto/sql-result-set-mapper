@@ -6,18 +6,11 @@ namespace DBorsatto\SqlResultSetMapper\Configuration;
 
 class RelationMapping
 {
-    private string $objectProperty;
-    private bool $isMultiple;
-    private ClassMapping $classMapping;
-
     private function __construct(
-        string $objectProperty,
-        bool $isMultiple,
-        ClassMapping $classMapping
+        private string $objectProperty,
+        private bool $isMultiple,
+        private ClassMapping $classMapping,
     ) {
-        $this->objectProperty = $objectProperty;
-        $this->isMultiple = $isMultiple;
-        $this->classMapping = $classMapping;
     }
 
     public static function single(string $objectProperty, ClassMapping $classMapping): self

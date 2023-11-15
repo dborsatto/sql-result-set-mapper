@@ -5,29 +5,34 @@ declare(strict_types=1);
 namespace DBorsatto\SqlResultSetMapper\Hydrator;
 
 use DBorsatto\SqlResultSetMapper\Configuration\PropertyMappingConverterInterface;
+use DBorsatto\SqlResultSetMapper\Exception\SqlResultSetValueCouldNotBeConvertedException;
 use Laminas\Hydrator\Strategy\StrategyInterface;
 use Throwable;
 
 class LaminasConvertedPropertyStrategy implements StrategyInterface
 {
-    private PropertyMappingConverterInterface $mapping;
-
-    public function __construct(PropertyMappingConverterInterface $mapping)
+    public function __construct(private PropertyMappingConverterInterface $mapping)
     {
-        $this->mapping = $mapping;
     }
 
-    public function extract($value, ?object $object = null)
+    public function extract($value, ?object $object = null): mixed
     {
         return $value;
     }
 
     /**
-     * @throws Throwable
+     * @throws SqlResultSetValueCouldNotBeConvertedException
      */
-    public function hydrate($value, ?array $data)
+    public function hydrate($value, ?array $data): mixed
     {
-        /** @var string|null $value */
-        return $this->mapping->convert($value);
+        try {
+            return $this->mapping->convert($value);
+        } catch (Throwable $exception) {
+            if ($exception instanceof SqlResultSetValueCouldNotBeConvertedException) {
+                throw $exception;
+            }
+
+            throw SqlResultSetValueCouldNotBeConvertedException::create($value, $exception);
+        }
     }
 }

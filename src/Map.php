@@ -6,8 +6,8 @@ namespace DBorsatto\SqlResultSetMapper;
 
 use Closure;
 use DBorsatto\SmartEnums\EnumInterface;
-use DBorsatto\SqlResultSetMapper\Bridge\SmartEnums\EnumPropertiesMapping;
-use DBorsatto\SqlResultSetMapper\Bridge\SmartEnums\EnumPropertyMapping;
+use DBorsatto\SqlResultSetMapper\Bridge\SmartEnums\SmartEnumPropertiesMapping;
+use DBorsatto\SqlResultSetMapper\Bridge\SmartEnums\SmartEnumPropertyMapping;
 use DBorsatto\SqlResultSetMapper\Configuration\Base\DateTimeImmutablePropertyMapping;
 use DBorsatto\SqlResultSetMapper\Configuration\Base\DateTimePropertyMapping;
 use DBorsatto\SqlResultSetMapper\Configuration\ClassMapping;
@@ -28,7 +28,7 @@ class Map
     public static function create(
         string $targetClass,
         string $resultSetIdColumn,
-        array $mappings
+        array $mappings,
     ): ClassMapping {
         return new ClassMapping($targetClass, $resultSetIdColumn, $mappings);
     }
@@ -41,7 +41,7 @@ class Map
         string $objectProperty,
         string $targetClass,
         string $resultSetIdColumn,
-        array $mappings
+        array $mappings,
     ): RelationMapping {
         return RelationMapping::multiple(
             $objectProperty,
@@ -57,7 +57,7 @@ class Map
         string $objectProperty,
         string $targetClass,
         string $resultSetIdColumn,
-        array $mappings
+        array $mappings,
     ): RelationMapping {
         return RelationMapping::single(
             $objectProperty,
@@ -78,21 +78,21 @@ class Map
     public static function propertyConversion(
         string $objectProperty,
         string $resultSetColumn,
-        Closure $closure
+        Closure $closure,
     ): ClosurePropertyMapping {
         return new ClosurePropertyMapping($objectProperty, $resultSetColumn, $closure);
     }
 
     public static function datetimeImmutableProperty(
         string $objectProperty,
-        string $resultSetColumn
+        string $resultSetColumn,
     ): DateTimeImmutablePropertyMapping {
         return new DateTimeImmutablePropertyMapping($objectProperty, $resultSetColumn);
     }
 
     public static function datetimeProperty(
         string $objectProperty,
-        string $resultSetColumn
+        string $resultSetColumn,
     ): DateTimePropertyMapping {
         return new DateTimePropertyMapping($objectProperty, $resultSetColumn);
     }
@@ -100,25 +100,25 @@ class Map
     /**
      * @param class-string<EnumInterface> $enumClass
      */
-    public static function enumProperty(
+    public static function smartEnumProperty(
         string $objectProperty,
         string $resultSetColumn,
-        string $enumClass
-    ): EnumPropertyMapping {
-        return new EnumPropertyMapping($objectProperty, $resultSetColumn, $enumClass);
+        string $enumClass,
+    ): SmartEnumPropertyMapping {
+        return new SmartEnumPropertyMapping($objectProperty, $resultSetColumn, $enumClass);
     }
 
     /**
      * @param class-string<EnumInterface> $enumClass
      * @param non-empty-string            $symbol
      */
-    public static function enumPropertiesSymbolSeparated(
+    public static function smartEnumPropertiesSymbolSeparated(
         string $objectProperty,
         string $resultSetColumn,
         string $enumClass,
-        string $symbol = ','
-    ): EnumPropertiesMapping {
-        return EnumPropertiesMapping::fromSymbolSeparatedValues(
+        string $symbol = ',',
+    ): SmartEnumPropertiesMapping {
+        return SmartEnumPropertiesMapping::fromSymbolSeparatedValues(
             $objectProperty,
             $resultSetColumn,
             $enumClass,
@@ -129,22 +129,22 @@ class Map
     /**
      * @param class-string<EnumInterface> $enumClass
      */
-    public static function enumPropertiesJson(
+    public static function smartEnumPropertiesJson(
         string $objectProperty,
         string $resultSetColumn,
-        string $enumClass
-    ): EnumPropertiesMapping {
-        return EnumPropertiesMapping::fromJsonList($objectProperty, $resultSetColumn, $enumClass);
+        string $enumClass,
+    ): SmartEnumPropertiesMapping {
+        return SmartEnumPropertiesMapping::fromJsonList($objectProperty, $resultSetColumn, $enumClass);
     }
 
     /**
      * @param class-string<EnumInterface> $enumClass
      */
-    public static function enumPropertiesSerialized(
+    public static function smartEnumPropertiesSerialized(
         string $objectProperty,
         string $resultSetColumn,
-        string $enumClass
-    ): EnumPropertiesMapping {
-        return EnumPropertiesMapping::fromSerializedArray($objectProperty, $resultSetColumn, $enumClass);
+        string $enumClass,
+    ): SmartEnumPropertiesMapping {
+        return SmartEnumPropertiesMapping::fromSerializedArray($objectProperty, $resultSetColumn, $enumClass);
     }
 }
