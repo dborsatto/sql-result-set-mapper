@@ -49,10 +49,10 @@ class DataSet
                     Map::property('latitude', 'addressCoordinatesLatitude'),
                 ]),
             ]),
-            Map::enumProperty('enumValue', 'enumValue', ConcreteEnum::class),
-            Map::enumPropertiesSerialized('enumSerializedArray', 'enumSerializedArray', ConcreteEnum::class),
-            Map::enumPropertiesSymbolSeparated('enumSymbolSeparated', 'enumSymbolSeparated', ConcreteEnum::class),
-            Map::enumPropertiesJson('enumJson', 'enumJson', ConcreteEnum::class),
+            Map::smartEnumProperty('enumValue', 'enumValue', ConcreteEnum::class),
+            Map::smartEnumPropertiesSerialized('enumSerializedArray', 'enumSerializedArray', ConcreteEnum::class),
+            Map::smartEnumPropertiesSymbolSeparated('enumSymbolSeparated', 'enumSymbolSeparated', ConcreteEnum::class),
+            Map::smartEnumPropertiesJson('enumJson', 'enumJson', ConcreteEnum::class),
         ]);
     }
 

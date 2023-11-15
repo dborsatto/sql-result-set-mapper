@@ -50,7 +50,7 @@ class Author
         ?ConcreteEnum $enumValue,
         ?array $enumSerializedArray,
         ?array $enumSymbolSeparated,
-        ?array $enumJson
+        ?array $enumJson,
     ) {
         $this->id = $id;
         $this->firstName = $firstName;

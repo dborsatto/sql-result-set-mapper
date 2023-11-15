@@ -13,27 +13,14 @@ use function array_values;
 class ClassMapping
 {
     /**
-     * @var class-string<T>
-     */
-    private string $targetClass;
-    private string $resultSetIdColumn;
-    /**
-     * @var list<PropertyMapping|RelationMapping>
-     */
-    private array $mappings;
-
-    /**
      * @param class-string<T>                       $targetClass
      * @param list<PropertyMapping|RelationMapping> $mappings
      */
     public function __construct(
-        string $targetClass,
-        string $resultSetIdColumn,
-        array $mappings
+        private string $targetClass,
+        private string $resultSetIdColumn,
+        private array $mappings,
     ) {
-        $this->targetClass = $targetClass;
-        $this->resultSetIdColumn = $resultSetIdColumn;
-        $this->mappings = $mappings;
     }
 
     /**

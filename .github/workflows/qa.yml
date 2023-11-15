@@ -1,0 +1,73 @@
+name: Quality assurance
+
+on:
+    pull_request:
+        branches: [ main ]
+
+jobs:
+    static-analysis:
+        runs-on: ubuntu-22.04
+        name: Static analysis
+
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@v4
+
+            -   name: Execute Psalm
+                uses: docker://ghcr.io/psalm/psalm-github-actions
+                with:
+                    composer_require_dev: true
+
+    code-style:
+        runs-on: ubuntu-22.04
+        name: Code style
+
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@v4
+
+            -   name: Execute PHP-CS-Fixer
+                uses: docker://oskarstark/php-cs-fixer-ga
+
+    tests:
+        runs-on: ubuntu-22.04
+        strategy:
+            max-parallel: 1
+            matrix:
+                php:
+                    - 8.0
+                    - 8.1
+                    - 8.2
+                    - 8.3
+                include:
+                    -   description: 8.0
+                        php: 8.0
+                    -   description: 8.1
+                        php: 8.1
+                    -   description: 8.2
+                        php: 8.2
+                    -   description: 8.3
+                        php: 8.3
+
+        name: Tests PHP ${{ matrix.php }}
+
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@v4
+
+            -   name: Cache
+                uses: actions/cache@v3
+                with:
+                    path: ~/.composer/cache/files
+                    key: ${{ matrix.php }}-${{ matrix.composer_option }}
+
+            -   name: Setup PHP
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: ${{ matrix.php }}
+
+            -   name: Install dependencies
+                run: composer install --no-interaction --no-progress --ansi
+
+            -   name: Execute PHPUnit
+                run: vendor/bin/phpunit

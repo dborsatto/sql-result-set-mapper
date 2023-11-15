@@ -6,13 +6,8 @@ namespace DBorsatto\SqlResultSetMapper\Configuration;
 
 class PropertyMapping
 {
-    private string $objectProperty;
-    private string $resultSetColumn;
-
-    public function __construct(string $objectProperty, string $resultSetColumn)
+    public function __construct(private string $objectProperty, private string $resultSetColumn)
     {
-        $this->objectProperty = $objectProperty;
-        $this->resultSetColumn = $resultSetColumn;
     }
 
     public function getObjectProperty(): string

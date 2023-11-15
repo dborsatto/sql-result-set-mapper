@@ -9,34 +9,26 @@ use DBorsatto\SmartEnums\EnumListConverter\EnumListConverterInterface;
 use DBorsatto\SmartEnums\EnumListConverter\JsonEnumListConverter;
 use DBorsatto\SmartEnums\EnumListConverter\SerializedArrayEnumListConverter;
 use DBorsatto\SmartEnums\EnumListConverter\SymbolSeparatedValuesEnumListConverter;
-use DBorsatto\SmartEnums\Exception\SmartEnumExceptionInterface;
 use DBorsatto\SqlResultSetMapper\Configuration\PropertyMapping;
 use DBorsatto\SqlResultSetMapper\Configuration\PropertyMappingConverterInterface;
+use DBorsatto\SqlResultSetMapper\Exception\SqlResultSetValueCouldNotBeConvertedException;
+use function is_string;
 
 /**
  * @implements PropertyMappingConverterInterface<list<EnumInterface>>
  */
-class EnumPropertiesMapping extends PropertyMapping implements PropertyMappingConverterInterface
+class SmartEnumPropertiesMapping extends PropertyMapping implements PropertyMappingConverterInterface
 {
-    /**
-     * @var class-string<EnumInterface>
-     */
-    private string $enumClass;
-    private EnumListConverterInterface $enumListConverter;
-
     /**
      * @param class-string<EnumInterface> $enumClass
      */
     private function __construct(
         string $objectProperty,
         string $resultSetColumn,
-        string $enumClass,
-        EnumListConverterInterface $enumListConverter
+        private string $enumClass,
+        private EnumListConverterInterface $enumListConverter,
     ) {
         parent::__construct($objectProperty, $resultSetColumn);
-
-        $this->enumClass = $enumClass;
-        $this->enumListConverter = $enumListConverter;
     }
 
     /**
@@ -47,7 +39,7 @@ class EnumPropertiesMapping extends PropertyMapping implements PropertyMappingCo
         string $objectProperty,
         string $resultSetColumn,
         string $enumClass,
-        string $symbol = ','
+        string $symbol = ',',
     ): self {
         return new self(
             $objectProperty,
@@ -64,7 +56,7 @@ class EnumPropertiesMapping extends PropertyMapping implements PropertyMappingCo
         string $objectProperty,
         string $resultSetColumn,
         string $enumClass,
-        string $propertyKey = 'values'
+        string $propertyKey = 'values',
     ): self {
         return new self(
             $objectProperty,
@@ -80,7 +72,7 @@ class EnumPropertiesMapping extends PropertyMapping implements PropertyMappingCo
     public static function fromSerializedArray(
         string $objectProperty,
         string $resultSetColumn,
-        string $enumClass
+        string $enumClass,
     ): self {
         return new self(
             $objectProperty,
@@ -90,13 +82,14 @@ class EnumPropertiesMapping extends PropertyMapping implements PropertyMappingCo
         );
     }
 
-    /**
-     * @throws SmartEnumExceptionInterface
-     */
-    public function convert(?string $value): ?array
+    public function convert(mixed $value): ?array
     {
         if ($value === null) {
             return null;
+        }
+
+        if (!is_string($value) || $value === '') {
+            throw SqlResultSetValueCouldNotBeConvertedException::create($value);
         }
 
         return $this->enumListConverter->convertFromStringToEnumList($this->enumClass, $value);

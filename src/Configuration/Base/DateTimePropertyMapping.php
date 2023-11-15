@@ -7,16 +7,22 @@ namespace DBorsatto\SqlResultSetMapper\Configuration\Base;
 use DateTime;
 use DBorsatto\SqlResultSetMapper\Configuration\PropertyMapping;
 use DBorsatto\SqlResultSetMapper\Configuration\PropertyMappingConverterInterface;
+use DBorsatto\SqlResultSetMapper\Exception\SqlResultSetValueCouldNotBeConvertedException;
+use function is_string;
 
 /**
  * @implements PropertyMappingConverterInterface<DateTime>
  */
 class DateTimePropertyMapping extends PropertyMapping implements PropertyMappingConverterInterface
 {
-    public function convert(?string $value): ?DateTime
+    public function convert(mixed $value): ?DateTime
     {
         if ($value === null) {
             return null;
+        }
+
+        if (!is_string($value)) {
+            throw SqlResultSetValueCouldNotBeConvertedException::create($value);
         }
 
         return new DateTime($value);

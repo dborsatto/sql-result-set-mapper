@@ -1,5 +1,12 @@
 # Upgrade guide
 
+## 2.x to 3.x
+
+* Minimum version was bumped from PHP 7.4 to PHP 8.0
+* The signature of `PropertyMappingConverterInterface::convert(mixed $value): mixed` has been changed
+* Methods in the `Map` class that refer to enums from the `dborsatto/smart-enums` library have been renamed to include the `smart` prefix so as to differentiate them from native enums
+* `EnumPropertyMapping` and `EnumPropertiesMapping` have been renamed to `SmartEnumPropertyMapping` and `SmartEnumPropertiesMapping` respectively
+
 ## 1.x to 2.x
 
 ### `DBorsatto\SqlResultSetMapper\Map`

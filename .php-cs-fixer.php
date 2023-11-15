@@ -19,7 +19,7 @@ return $config->setFinder($finder)
         '@DoctrineAnnotation' => true,
         '@PhpCsFixer' => true,
         '@Symfony' => true,
-        '@PHP74Migration' => true,
+        '@PHP80Migration' => true,
         'blank_line_between_import_groups' => false,
         'concat_space' => [
             'spacing' => 'one',
@@ -48,6 +48,7 @@ return $config->setFinder($finder)
         'no_superfluous_phpdoc_tags' => false,
         'no_unused_imports' => true,
         'no_useless_sprintf' => true,
+        'nullable_type_declaration_for_default_null_value' => false,
         'ordered_class_elements' => [
             'order' => [
                 'use_trait',
@@ -99,8 +100,10 @@ return $config->setFinder($finder)
         'trailing_comma_in_multiline' => [
             'after_heredoc' => true,
             'elements' => [
-                'arrays',
                 'arguments',
+                'arrays',
+                'match',
+                'parameters',
             ],
         ],
         'yoda_style' => [

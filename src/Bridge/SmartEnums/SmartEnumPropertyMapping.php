@@ -6,37 +6,32 @@ namespace DBorsatto\SqlResultSetMapper\Bridge\SmartEnums;
 
 use DBorsatto\SmartEnums\EnumFactory;
 use DBorsatto\SmartEnums\EnumInterface;
-use DBorsatto\SmartEnums\Exception\SmartEnumExceptionInterface;
 use DBorsatto\SqlResultSetMapper\Configuration\PropertyMapping;
 use DBorsatto\SqlResultSetMapper\Configuration\PropertyMappingConverterInterface;
+use DBorsatto\SqlResultSetMapper\Exception\SqlResultSetValueCouldNotBeConvertedException;
+use function is_string;
 
 /**
  * @implements PropertyMappingConverterInterface<EnumInterface>
  */
-class EnumPropertyMapping extends PropertyMapping implements PropertyMappingConverterInterface
+class SmartEnumPropertyMapping extends PropertyMapping implements PropertyMappingConverterInterface
 {
-    /**
-     * @var class-string<EnumInterface>
-     */
-    private string $enumClass;
-
     /**
      * @param class-string<EnumInterface> $enumClass
      */
-    public function __construct(string $objectProperty, string $resultSetColumn, string $enumClass)
+    public function __construct(string $objectProperty, string $resultSetColumn, private string $enumClass)
     {
         parent::__construct($objectProperty, $resultSetColumn);
-
-        $this->enumClass = $enumClass;
     }
 
-    /**
-     * @throws SmartEnumExceptionInterface
-     */
-    public function convert(?string $value): ?EnumInterface
+    public function convert(mixed $value): ?EnumInterface
     {
         if ($value === null) {
             return null;
+        }
+
+        if (!is_string($value) || $value === '') {
+            throw SqlResultSetValueCouldNotBeConvertedException::create($value);
         }
 
         $factory = new EnumFactory($this->enumClass);
