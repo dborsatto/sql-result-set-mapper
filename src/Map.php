@@ -73,7 +73,7 @@ class Map
     /**
      * @template T
      *
-     * @param Closure(string|null): T $closure
+     * @param Closure(bool|float|int|string|null): T $closure
      */
     public static function propertyConversion(
         string $objectProperty,

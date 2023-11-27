@@ -6,13 +6,8 @@ namespace DBorsatto\SqlResultSetMapper\Tests\Model;
 
 class BlogPost
 {
-    private string $title;
-    private string $body;
-
-    public function __construct(string $title, string $body)
+    public function __construct(private string $title, private string $body)
     {
-        $this->title = $title;
-        $this->body = $body;
     }
 
     public function getTitle(): string

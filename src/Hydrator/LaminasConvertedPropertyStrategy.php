@@ -15,7 +15,7 @@ class LaminasConvertedPropertyStrategy implements StrategyInterface
     {
     }
 
-    public function extract($value, ?object $object = null): mixed
+    public function extract($value, null|object $object = null): mixed
     {
         return $value;
     }
@@ -23,8 +23,9 @@ class LaminasConvertedPropertyStrategy implements StrategyInterface
     /**
      * @throws SqlResultSetValueCouldNotBeConvertedException
      */
-    public function hydrate($value, ?array $data): mixed
+    public function hydrate($value, null|array $data): mixed
     {
+        /** @var bool|float|int|string|null $value */
         try {
             return $this->mapping->convert($value);
         } catch (Throwable $exception) {

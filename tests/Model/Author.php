@@ -6,33 +6,6 @@ namespace DBorsatto\SqlResultSetMapper\Tests\Model;
 
 class Author
 {
-    private int $id;
-    private string $firstName;
-    private ?Email $email;
-    /**
-     * @var list<BlogPost>
-     */
-    private array $blogPosts;
-    /**
-     * @var list<Session>
-     */
-    private array $sessions;
-    private ?Address $address;
-
-    private ?ConcreteEnum $enumValue;
-    /**
-     * @var list<ConcreteEnum>|null
-     */
-    private ?array $enumSerializedArray;
-    /**
-     * @var list<ConcreteEnum>|null
-     */
-    private ?array $enumSymbolSeparated;
-    /**
-     * @var list<ConcreteEnum>|null
-     */
-    private ?array $enumJson;
-
     /**
      * @param list<BlogPost>          $blogPosts
      * @param list<Session>           $sessions
@@ -41,27 +14,17 @@ class Author
      * @param list<ConcreteEnum>|null $enumJson
      */
     public function __construct(
-        int $id,
-        string $firstName,
-        ?Email $email,
-        array $blogPosts,
-        array $sessions,
-        ?Address $address,
-        ?ConcreteEnum $enumValue,
-        ?array $enumSerializedArray,
-        ?array $enumSymbolSeparated,
-        ?array $enumJson,
+        private int $id,
+        private string $firstName,
+        private null|Email $email,
+        private array $blogPosts,
+        private array $sessions,
+        private null|Address $address,
+        private null|ConcreteEnum $enumValue,
+        private null|array $enumSerializedArray,
+        private null|array $enumSymbolSeparated,
+        private null|array $enumJson,
     ) {
-        $this->id = $id;
-        $this->firstName = $firstName;
-        $this->email = $email;
-        $this->blogPosts = $blogPosts;
-        $this->sessions = $sessions;
-        $this->address = $address;
-        $this->enumValue = $enumValue;
-        $this->enumSerializedArray = $enumSerializedArray;
-        $this->enumSymbolSeparated = $enumSymbolSeparated;
-        $this->enumJson = $enumJson;
     }
 
     public function getId(): int
@@ -74,7 +37,7 @@ class Author
         return $this->firstName;
     }
 
-    public function getEmail(): ?Email
+    public function getEmail(): null|Email
     {
         return $this->email;
     }
@@ -95,27 +58,27 @@ class Author
         return $this->sessions;
     }
 
-    public function getAddress(): ?Address
+    public function getAddress(): null|Address
     {
         return $this->address;
     }
 
-    public function getEnumValue(): ?ConcreteEnum
+    public function getEnumValue(): null|ConcreteEnum
     {
         return $this->enumValue;
     }
 
-    public function getEnumSerializedArray(): ?array
+    public function getEnumSerializedArray(): null|array
     {
         return $this->enumSerializedArray;
     }
 
-    public function getEnumSymbolSeparated(): ?array
+    public function getEnumSymbolSeparated(): null|array
     {
         return $this->enumSymbolSeparated;
     }
 
-    public function getEnumJson(): ?array
+    public function getEnumJson(): null|array
     {
         return $this->enumJson;
     }
