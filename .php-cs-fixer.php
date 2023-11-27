@@ -95,6 +95,7 @@ return $config->setFinder($finder)
         'php_unit_set_up_tear_down_visibility' => true,
         'php_unit_test_class_requires_covers' => false,
         'self_accessor' => true,
+        'single_line_empty_body' => false,
         'single_line_throw' => false,
         'string_length_to_empty' => true,
         'trailing_comma_in_multiline' => [

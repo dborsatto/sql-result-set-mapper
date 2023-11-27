@@ -82,7 +82,7 @@ class SmartEnumPropertiesMapping extends PropertyMapping implements PropertyMapp
         );
     }
 
-    public function convert(mixed $value): ?array
+    public function convert(null|bool|float|int|string $value): null|array
     {
         if ($value === null) {
             return null;

@@ -16,5 +16,5 @@ interface PropertyMappingConverterInterface
      *
      * @return T|null
      */
-    public function convert(mixed $value): mixed;
+    public function convert(null|bool|float|int|string $value): mixed;
 }

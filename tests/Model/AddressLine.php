@@ -6,11 +6,8 @@ namespace DBorsatto\SqlResultSetMapper\Tests\Model;
 
 class AddressLine
 {
-    private string $line;
-
-    public function __construct(string $line)
+    public function __construct(private string $line)
     {
-        $this->line = $line;
     }
 
     public function getLine(): string

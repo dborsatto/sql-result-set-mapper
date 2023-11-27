@@ -17,7 +17,7 @@ class AuthorReadModel
 {
     private int $id;
     private string $name;
-    private ?Email $email;
+    private Email|null $email;
     private array $blogPosts;
 }
 

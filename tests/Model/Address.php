@@ -6,21 +6,14 @@ namespace DBorsatto\SqlResultSetMapper\Tests\Model;
 
 class Address
 {
-    private string $description;
-    /**
-     * @var list<AddressLine>
-     */
-    private array $lines;
-    private ?AddressCoordinates $coordinates;
-
     /**
      * @param list<AddressLine> $lines
      */
-    public function __construct(string $description, array $lines, ?AddressCoordinates $coordinates)
-    {
-        $this->description = $description;
-        $this->lines = $lines;
-        $this->coordinates = $coordinates;
+    public function __construct(
+        private string $description,
+        private array $lines,
+        private null|AddressCoordinates $coordinates,
+    ) {
     }
 
     public function getDescription(): string
@@ -33,7 +26,7 @@ class Address
         return $this->lines;
     }
 
-    public function getCoordinates(): ?AddressCoordinates
+    public function getCoordinates(): null|AddressCoordinates
     {
         return $this->coordinates;
     }

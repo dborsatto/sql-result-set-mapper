@@ -24,7 +24,7 @@ class SmartEnumPropertyMapping extends PropertyMapping implements PropertyMappin
         parent::__construct($objectProperty, $resultSetColumn);
     }
 
-    public function convert(mixed $value): ?EnumInterface
+    public function convert(null|bool|float|int|string $value): null|EnumInterface
     {
         if ($value === null) {
             return null;

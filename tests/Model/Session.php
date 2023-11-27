@@ -8,14 +8,11 @@ use DateTimeImmutable;
 
 class Session
 {
-    private ?DateTimeImmutable $expiresAt;
-
-    public function __construct(?DateTimeImmutable $expiresAt)
+    public function __construct(private null|DateTimeImmutable $expiresAt)
     {
-        $this->expiresAt = $expiresAt;
     }
 
-    public function getExpiresAt(): ?DateTimeImmutable
+    public function getExpiresAt(): null|DateTimeImmutable
     {
         return $this->expiresAt;
     }

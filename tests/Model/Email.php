@@ -6,11 +6,8 @@ namespace DBorsatto\SqlResultSetMapper\Tests\Model;
 
 class Email
 {
-    private string $value;
-
-    public function __construct(string $value)
+    public function __construct(private string $value)
     {
-        $this->value = $value;
     }
 
     public function getValue(): string

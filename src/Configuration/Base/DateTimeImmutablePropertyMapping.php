@@ -15,7 +15,7 @@ use function is_string;
  */
 class DateTimeImmutablePropertyMapping extends PropertyMapping implements PropertyMappingConverterInterface
 {
-    public function convert(mixed $value): ?DateTimeImmutable
+    public function convert(null|bool|float|int|string $value): null|DateTimeImmutable
     {
         if ($value === null) {
             return null;
