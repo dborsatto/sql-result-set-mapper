@@ -88,8 +88,12 @@ class SmartEnumPropertiesMapping extends PropertyMapping implements PropertyMapp
             return null;
         }
 
-        if (!is_string($value) || $value === '') {
+        if (!is_string($value)) {
             throw SqlResultSetValueCouldNotBeConvertedException::create($value);
+        }
+
+        if ($value === '') {
+            return [];
         }
 
         return $this->enumListConverter->convertFromStringToEnumList($this->enumClass, $value);
