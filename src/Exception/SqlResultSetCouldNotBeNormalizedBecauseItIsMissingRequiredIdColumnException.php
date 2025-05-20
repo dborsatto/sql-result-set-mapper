@@ -6,7 +6,7 @@ namespace DBorsatto\SqlResultSetMapper\Exception;
 
 use function sprintf;
 
-class SqlResultSetCouldNotBeNormalizedBecauseItIsMissingRequiredIdColumnException extends AbstractSqlResultSetMapperException
+final class SqlResultSetCouldNotBeNormalizedBecauseItIsMissingRequiredIdColumnException extends AbstractSqlResultSetMapperException
 {
     public static function create(string $idColumn): self
     {

@@ -6,9 +6,9 @@ namespace DBorsatto\SqlResultSetMapper\Exception;
 
 use Throwable;
 
-class SqlResultSetCouldNotBeHydratedException extends AbstractSqlResultSetMapperException
+final class SqlResultSetCouldNotBeHydratedException extends AbstractSqlResultSetMapperException
 {
-    public static function create(Throwable $previous = null): self
+    public static function create(?Throwable $previous = null): self
     {
         return new self('Sql result set could not be hydrated', $previous);
     }

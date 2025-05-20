@@ -10,10 +10,11 @@ use DBorsatto\SqlResultSetMapper\Exception\SqlResultSetCouldNotBeHydratedExcepti
 use Laminas\Hydrator\ReflectionHydrator;
 use Laminas\Hydrator\Strategy\CollectionStrategy;
 use Laminas\Hydrator\Strategy\HydratorStrategy;
+use Override;
 use ReflectionClass;
 use Throwable;
 
-class LaminasHydrator implements HydratorInterface
+final class LaminasHydrator implements HydratorInterface
 {
     /**
      * @template T of object
@@ -25,13 +26,14 @@ class LaminasHydrator implements HydratorInterface
      *
      * @return list<T>
      */
+    #[Override]
     public function hydrate(ClassMapping $classMapping, array $items): array
     {
         $hydrator = new ReflectionHydrator();
         $this->configureHydrator($hydrator, $classMapping);
 
         try {
-            $reflectionClass = new ReflectionClass($classMapping->getTargetClass());
+            $reflectionClass = new ReflectionClass($classMapping->targetClass);
             $convertedItems = [];
             foreach ($items as $item) {
                 /** @var T $object */
@@ -48,24 +50,24 @@ class LaminasHydrator implements HydratorInterface
 
     private function configureHydrator(ReflectionHydrator $hydrator, ClassMapping $classMapping): void
     {
-        foreach ($classMapping->getPropertyMappings() as $propertyMapping) {
+        foreach ($classMapping->propertyMappings as $propertyMapping) {
             if ($propertyMapping instanceof PropertyMappingConverterInterface) {
                 $hydrator->addStrategy(
-                    $propertyMapping->getObjectProperty(),
+                    $propertyMapping->objectProperty,
                     new LaminasConvertedPropertyStrategy($propertyMapping),
                 );
             }
         }
 
-        foreach ($classMapping->getRelationMappings() as $relationMapping) {
+        foreach ($classMapping->relationMappings as $relationMapping) {
             $relationHydrator = new ReflectionHydrator();
-            $innerClassMapping = $relationMapping->getClassMapping();
+            $innerClassMapping = $relationMapping->classMapping;
 
-            $strategy = $relationMapping->isMultiple()
-                ? new CollectionStrategy($relationHydrator, $innerClassMapping->getTargetClass())
-                : new HydratorStrategy($relationHydrator, $innerClassMapping->getTargetClass());
+            $strategy = $relationMapping->isMultiple
+                ? new CollectionStrategy($relationHydrator, $innerClassMapping->targetClass)
+                : new HydratorStrategy($relationHydrator, $innerClassMapping->targetClass);
 
-            $hydrator->addStrategy($relationMapping->getObjectProperty(), $strategy);
+            $hydrator->addStrategy($relationMapping->objectProperty, $strategy);
 
             $this->configureHydrator($relationHydrator, $innerClassMapping);
         }

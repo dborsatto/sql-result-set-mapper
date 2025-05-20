@@ -7,7 +7,7 @@ namespace DBorsatto\SqlResultSetMapper\Tests;
 use DBorsatto\SqlResultSetMapper\Mapper;
 use PHPUnit\Framework\TestCase;
 
-class MapperTest extends TestCase
+final class MapperTest extends TestCase
 {
     /**
      * @psalm-suppress MissingThrowsDocblock

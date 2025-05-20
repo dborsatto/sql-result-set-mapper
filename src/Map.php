@@ -4,18 +4,18 @@ declare(strict_types=1);
 
 namespace DBorsatto\SqlResultSetMapper;
 
+use BackedEnum;
 use Closure;
-use DBorsatto\SmartEnums\EnumInterface;
-use DBorsatto\SqlResultSetMapper\Bridge\SmartEnums\SmartEnumPropertiesMapping;
-use DBorsatto\SqlResultSetMapper\Bridge\SmartEnums\SmartEnumPropertyMapping;
 use DBorsatto\SqlResultSetMapper\Configuration\Base\DateTimeImmutablePropertyMapping;
 use DBorsatto\SqlResultSetMapper\Configuration\Base\DateTimePropertyMapping;
+use DBorsatto\SqlResultSetMapper\Configuration\Base\EnumPropertiesMapping;
+use DBorsatto\SqlResultSetMapper\Configuration\Base\EnumPropertyMapping;
 use DBorsatto\SqlResultSetMapper\Configuration\ClassMapping;
 use DBorsatto\SqlResultSetMapper\Configuration\ClosurePropertyMapping;
 use DBorsatto\SqlResultSetMapper\Configuration\PropertyMapping;
 use DBorsatto\SqlResultSetMapper\Configuration\RelationMapping;
 
-class Map
+final class Map
 {
     /**
      * @template T of object
@@ -98,27 +98,27 @@ class Map
     }
 
     /**
-     * @param class-string<EnumInterface> $enumClass
+     * @param class-string<BackedEnum> $enumClass
      */
-    public static function smartEnumProperty(
+    public static function enumProperty(
         string $objectProperty,
         string $resultSetColumn,
         string $enumClass,
-    ): SmartEnumPropertyMapping {
-        return new SmartEnumPropertyMapping($objectProperty, $resultSetColumn, $enumClass);
+    ): EnumPropertyMapping {
+        return new EnumPropertyMapping($objectProperty, $resultSetColumn, $enumClass);
     }
 
     /**
-     * @param class-string<EnumInterface> $enumClass
-     * @param non-empty-string            $symbol
+     * @param class-string<BackedEnum> $enumClass
+     * @param non-empty-string         $symbol
      */
     public static function smartEnumPropertiesSymbolSeparated(
         string $objectProperty,
         string $resultSetColumn,
         string $enumClass,
         string $symbol = ',',
-    ): SmartEnumPropertiesMapping {
-        return SmartEnumPropertiesMapping::fromSymbolSeparatedValues(
+    ): EnumPropertiesMapping {
+        return EnumPropertiesMapping::fromSymbolSeparatedValues(
             $objectProperty,
             $resultSetColumn,
             $enumClass,
@@ -127,24 +127,13 @@ class Map
     }
 
     /**
-     * @param class-string<EnumInterface> $enumClass
+     * @param class-string<BackedEnum> $enumClass
      */
     public static function smartEnumPropertiesJson(
         string $objectProperty,
         string $resultSetColumn,
         string $enumClass,
-    ): SmartEnumPropertiesMapping {
-        return SmartEnumPropertiesMapping::fromJsonList($objectProperty, $resultSetColumn, $enumClass);
-    }
-
-    /**
-     * @param class-string<EnumInterface> $enumClass
-     */
-    public static function smartEnumPropertiesSerialized(
-        string $objectProperty,
-        string $resultSetColumn,
-        string $enumClass,
-    ): SmartEnumPropertiesMapping {
-        return SmartEnumPropertiesMapping::fromSerializedArray($objectProperty, $resultSetColumn, $enumClass);
+    ): EnumPropertiesMapping {
+        return EnumPropertiesMapping::fromJsonList($objectProperty, $resultSetColumn, $enumClass);
     }
 }

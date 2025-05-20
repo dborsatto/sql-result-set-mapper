@@ -2,29 +2,34 @@
 
 declare(strict_types=1);
 
-namespace DBorsatto\SqlResultSetMapper\Bridge\SmartEnums;
+namespace DBorsatto\SqlResultSetMapper\Configuration\Base;
 
-use DBorsatto\SmartEnums\EnumFactory;
-use DBorsatto\SmartEnums\EnumInterface;
+use BackedEnum;
 use DBorsatto\SqlResultSetMapper\Configuration\PropertyMapping;
 use DBorsatto\SqlResultSetMapper\Configuration\PropertyMappingConverterInterface;
 use DBorsatto\SqlResultSetMapper\Exception\SqlResultSetValueCouldNotBeConvertedException;
+use Override;
+use ValueError;
+
 use function is_string;
 
 /**
- * @implements PropertyMappingConverterInterface<EnumInterface>
+ * @template T of BackedEnum
+ *
+ * @implements PropertyMappingConverterInterface<T>
  */
-class SmartEnumPropertyMapping extends PropertyMapping implements PropertyMappingConverterInterface
+final readonly class EnumPropertyMapping extends PropertyMapping implements PropertyMappingConverterInterface
 {
     /**
-     * @param class-string<EnumInterface> $enumClass
+     * @param class-string<T> $enumClass
      */
     public function __construct(string $objectProperty, string $resultSetColumn, private string $enumClass)
     {
         parent::__construct($objectProperty, $resultSetColumn);
     }
 
-    public function convert(null|bool|float|int|string $value): null|EnumInterface
+    #[Override]
+    public function convert(bool|float|int|string|null $value): ?BackedEnum
     {
         if ($value === null) {
             return null;
@@ -34,8 +39,12 @@ class SmartEnumPropertyMapping extends PropertyMapping implements PropertyMappin
             throw SqlResultSetValueCouldNotBeConvertedException::create($value);
         }
 
-        $factory = new EnumFactory($this->enumClass);
+        $enumClass = $this->enumClass;
 
-        return $factory->fromValue($value);
+        try {
+            return $enumClass::from($value);
+        } catch (ValueError $exception) {
+            throw SqlResultSetValueCouldNotBeConvertedException::create($value, $exception);
+        }
     }
 }

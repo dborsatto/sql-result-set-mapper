@@ -7,13 +7,14 @@ namespace DBorsatto\SqlResultSetMapper;
 use DBorsatto\SqlResultSetMapper\Configuration\ClassMapping;
 use DBorsatto\SqlResultSetMapper\Exception\SqlResultSetCouldNotBeNormalizedBecauseItIsMissingConfiguredPropertyColumnException;
 use DBorsatto\SqlResultSetMapper\Exception\SqlResultSetCouldNotBeNormalizedBecauseItIsMissingRequiredIdColumnException;
+
 use function array_key_exists;
 use function array_values;
 
 /**
  * @template T of object
  */
-class Normalizer
+final class Normalizer
 {
     /**
      * @param ClassMapping<T> $classMapping
@@ -51,7 +52,7 @@ class Normalizer
     ): array {
         $dataForCurrentConfiguration = [];
 
-        $configurationIdColumn = $classMapping->getResultSetIdColumn();
+        $configurationIdColumn = $classMapping->resultSetIdColumn;
         foreach ($sqlResultSetRows as $currentIndex => $sqlResultSetRow) {
             $extractedRowData = [];
 
@@ -71,25 +72,25 @@ class Normalizer
 
             $currentIds[$configurationIdColumn] = $rowDataId;
 
-            foreach ($classMapping->getPropertyMappings() as $propertyMapping) {
-                $propertyResultSetColumn = $propertyMapping->getResultSetColumn();
+            foreach ($classMapping->propertyMappings as $propertyMapping) {
+                $propertyResultSetColumn = $propertyMapping->resultSetColumn;
                 if (!array_key_exists($propertyResultSetColumn, $sqlResultSetRow)) {
                     throw SqlResultSetCouldNotBeNormalizedBecauseItIsMissingConfiguredPropertyColumnException::create(
                         $propertyResultSetColumn,
                     );
                 }
 
-                $extractedRowData[$propertyMapping->getObjectProperty()] = $sqlResultSetRow[$propertyResultSetColumn];
+                $extractedRowData[$propertyMapping->objectProperty] = $sqlResultSetRow[$propertyResultSetColumn];
             }
 
-            foreach ($classMapping->getRelationMappings() as $relationMapping) {
+            foreach ($classMapping->relationMappings as $relationMapping) {
                 $extractedRowDataForRelation = $this->normalizeWithMapping(
                     $this->filterSqlResultSetRows($sqlResultSetRows, $currentIndex, $currentIds),
-                    $relationMapping->getClassMapping(),
+                    $relationMapping->classMapping,
                     $currentIds,
                 );
 
-                $extractedRowData[$relationMapping->getObjectProperty()] = $relationMapping->isMultiple()
+                $extractedRowData[$relationMapping->objectProperty] = $relationMapping->isMultiple
                     ? $extractedRowDataForRelation
                     : ($extractedRowDataForRelation[0] ?? null);
             }
@@ -110,7 +111,7 @@ class Normalizer
      */
     private function getRowId(array $sqlResultSetRow, ClassMapping $classMapping)
     {
-        $configurationIdColumn = $classMapping->getResultSetIdColumn();
+        $configurationIdColumn = $classMapping->resultSetIdColumn;
         if (!array_key_exists($configurationIdColumn, $sqlResultSetRow)) {
             throw SqlResultSetCouldNotBeNormalizedBecauseItIsMissingRequiredIdColumnException::create(
                 $configurationIdColumn,

@@ -3,28 +3,25 @@
 use DBorsatto\SqlResultSetMapper\Map;
 use DBorsatto\SqlResultSetMapper\Mapper;
 
-class Email
+readonly class Email
 {
-    private string $value;
-
-    public function __construct(string $value)
+    public function __construct(public string $value)
     {
-        $this->value = $value;
     }
 }
 
-class AuthorReadModel
+readonly class AuthorReadModel
 {
-    private int $id;
-    private string $name;
-    private Email|null $email;
-    private array $blogPosts;
+    public int $id;
+    public string $name;
+    public Email|null $email;
+    public array $blogPosts;
 }
 
-class BlogPostReadModel
+readonly class BlogPostReadModel
 {
-    private string $title;
-    private string $body;
+    public string $title;
+    public string $body;
 }
 
 $sql = <<<'SQL'

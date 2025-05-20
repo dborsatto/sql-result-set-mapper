@@ -5,13 +5,14 @@ declare(strict_types=1);
 namespace DBorsatto\SqlResultSetMapper\Configuration;
 
 use Closure;
+use Override;
 
 /**
  * @template T
  *
  * @implements PropertyMappingConverterInterface<T>
  */
-class ClosurePropertyMapping extends PropertyMapping implements PropertyMappingConverterInterface
+final readonly class ClosurePropertyMapping extends PropertyMapping implements PropertyMappingConverterInterface
 {
     /**
      * @param Closure(bool|float|int|string|null): T $closure
@@ -21,7 +22,8 @@ class ClosurePropertyMapping extends PropertyMapping implements PropertyMappingC
         parent::__construct($objectProperty, $resultSetColumn);
     }
 
-    public function convert(null|bool|float|int|string $value): mixed
+    #[Override]
+    public function convert(bool|float|int|string|null $value): mixed
     {
         $closure = $this->closure;
 

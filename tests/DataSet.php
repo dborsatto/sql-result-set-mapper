@@ -15,9 +15,10 @@ use DBorsatto\SqlResultSetMapper\Tests\Model\BlogPost;
 use DBorsatto\SqlResultSetMapper\Tests\Model\ConcreteEnum;
 use DBorsatto\SqlResultSetMapper\Tests\Model\Email;
 use DBorsatto\SqlResultSetMapper\Tests\Model\Session;
+
 use function is_string;
 
-class DataSet
+final class DataSet
 {
     /**
      * @return ClassMapping<Author>
@@ -30,7 +31,7 @@ class DataSet
             Map::propertyConversion(
                 'email',
                 'userEmail',
-                static fn (null|bool|float|int|string $value): null|Email => is_string($value) ? new Email($value) : null,
+                static fn (bool|float|int|string|null $value): ?Email => is_string($value) ? new Email($value) : null,
             ),
             Map::multipleRelation('blogPosts', BlogPost::class, 'blogPostId', [
                 Map::property('title', 'blogPostTitle'),
@@ -49,8 +50,7 @@ class DataSet
                     Map::property('latitude', 'addressCoordinatesLatitude'),
                 ]),
             ]),
-            Map::smartEnumProperty('enumValue', 'enumValue', ConcreteEnum::class),
-            Map::smartEnumPropertiesSerialized('enumSerializedArray', 'enumSerializedArray', ConcreteEnum::class),
+            Map::enumProperty('enumValue', 'enumValue', ConcreteEnum::class),
             Map::smartEnumPropertiesSymbolSeparated('enumSymbolSeparated', 'enumSymbolSeparated', ConcreteEnum::class),
             Map::smartEnumPropertiesJson('enumJson', 'enumJson', ConcreteEnum::class),
         ]);
@@ -79,9 +79,8 @@ class DataSet
                 'addressCoordinatesLongitude' => null,
                 'addressCoordinatesLatitude' => null,
                 'enumValue' => 'value1',
-                'enumSerializedArray' => 'a:1:{i:0;s:6:"value2";}',
                 'enumSymbolSeparated' => 'value1,value2',
-                'enumJson' => '{"values":["value1"]}',
+                'enumJson' => '["value1"]',
             ],
             [
                 'userId' => 1,
@@ -100,9 +99,8 @@ class DataSet
                 'addressCoordinatesLongitude' => null,
                 'addressCoordinatesLatitude' => null,
                 'enumValue' => 'value1',
-                'enumSerializedArray' => 'a:1:{i:0;s:6:"value2";}',
                 'enumSymbolSeparated' => 'value1,value2',
-                'enumJson' => '{"values":["value1"]}',
+                'enumJson' => '["value1"]',
             ],
             [
                 'userId' => 1,
@@ -121,9 +119,8 @@ class DataSet
                 'addressCoordinatesLongitude' => null,
                 'addressCoordinatesLatitude' => null,
                 'enumValue' => 'value1',
-                'enumSerializedArray' => 'a:1:{i:0;s:6:"value2";}',
                 'enumSymbolSeparated' => 'value1,value2',
-                'enumJson' => '{"values":["value1"]}',
+                'enumJson' => '["value1"]',
             ],
             [
                 'userId' => 1,
@@ -142,9 +139,8 @@ class DataSet
                 'addressCoordinatesLongitude' => null,
                 'addressCoordinatesLatitude' => null,
                 'enumValue' => 'value1',
-                'enumSerializedArray' => 'a:1:{i:0;s:6:"value2";}',
                 'enumSymbolSeparated' => 'value1,value2',
-                'enumJson' => '{"values":["value1"]}',
+                'enumJson' => '["value1"]',
             ],
             [
                 'userId' => 1,
@@ -163,9 +159,8 @@ class DataSet
                 'addressCoordinatesLongitude' => null,
                 'addressCoordinatesLatitude' => null,
                 'enumValue' => 'value1',
-                'enumSerializedArray' => 'a:1:{i:0;s:6:"value2";}',
                 'enumSymbolSeparated' => 'value1,value2',
-                'enumJson' => '{"values":["value1"]}',
+                'enumJson' => '["value1"]',
             ],
             [
                 'userId' => 1,
@@ -184,9 +179,8 @@ class DataSet
                 'addressCoordinatesLongitude' => null,
                 'addressCoordinatesLatitude' => null,
                 'enumValue' => 'value1',
-                'enumSerializedArray' => 'a:1:{i:0;s:6:"value2";}',
                 'enumSymbolSeparated' => 'value1,value2',
-                'enumJson' => '{"values":["value1"]}',
+                'enumJson' => '["value1"]',
             ],
             [
                 'userId' => 2,
@@ -205,7 +199,6 @@ class DataSet
                 'addressCoordinatesLongitude' => '12.5',
                 'addressCoordinatesLatitude' => '26.7',
                 'enumValue' => null,
-                'enumSerializedArray' => null,
                 'enumSymbolSeparated' => null,
                 'enumJson' => null,
             ],
@@ -226,7 +219,6 @@ class DataSet
                 'addressCoordinatesLongitude' => null,
                 'addressCoordinatesLatitude' => null,
                 'enumValue' => null,
-                'enumSerializedArray' => null,
                 'enumSymbolSeparated' => null,
                 'enumJson' => null,
             ],
@@ -247,7 +239,6 @@ class DataSet
                 'addressCoordinatesLongitude' => null,
                 'addressCoordinatesLatitude' => null,
                 'enumValue' => null,
-                'enumSerializedArray' => null,
                 'enumSymbolSeparated' => null,
                 'enumJson' => null,
             ],
@@ -265,9 +256,8 @@ class DataSet
                 'firstName' => 'John',
                 'email' => null,
                 'enumValue' => 'value1',
-                'enumSerializedArray' => 'a:1:{i:0;s:6:"value2";}',
                 'enumSymbolSeparated' => 'value1,value2',
-                'enumJson' => '{"values":["value1"]}',
+                'enumJson' => '["value1"]',
                 'blogPosts' => [
                     [
                         'title' => 'Some title',
@@ -297,7 +287,6 @@ class DataSet
                 'firstName' => 'Jane',
                 'email' => 'jane.smith@example.com',
                 'enumValue' => null,
-                'enumSerializedArray' => null,
                 'enumSymbolSeparated' => null,
                 'enumJson' => null,
                 'blogPosts' => [],
@@ -320,7 +309,6 @@ class DataSet
                 'firstName' => 'Jimmy',
                 'email' => null,
                 'enumValue' => null,
-                'enumSerializedArray' => null,
                 'enumSymbolSeparated' => null,
                 'enumJson' => null,
                 'blogPosts' => [
@@ -363,10 +351,9 @@ class DataSet
                     new Session(new DateTimeImmutable('2022-02-25 16:00:00')),
                 ],
                 null,
-                ConcreteEnum::value1(),
-                [ConcreteEnum::value2()],
-                [ConcreteEnum::value1(), ConcreteEnum::value2()],
-                [ConcreteEnum::value1()],
+                ConcreteEnum::Value1,
+                [ConcreteEnum::Value1, ConcreteEnum::Value2],
+                [ConcreteEnum::Value1],
             ),
             new Author(
                 2,
@@ -377,7 +364,6 @@ class DataSet
                     new Session(new DateTimeImmutable('2022-02-27 16:00:00')),
                 ],
                 new Address('Rome, Italy', [], new AddressCoordinates(12.5, 26.7)),
-                null,
                 null,
                 null,
                 null,
@@ -398,7 +384,6 @@ class DataSet
                     ],
                     null,
                 ),
-                null,
                 null,
                 null,
                 null,

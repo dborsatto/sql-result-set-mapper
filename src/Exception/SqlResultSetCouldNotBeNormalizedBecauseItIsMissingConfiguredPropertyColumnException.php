@@ -6,7 +6,7 @@ namespace DBorsatto\SqlResultSetMapper\Exception;
 
 use function sprintf;
 
-class SqlResultSetCouldNotBeNormalizedBecauseItIsMissingConfiguredPropertyColumnException extends AbstractSqlResultSetMapperException
+final class SqlResultSetCouldNotBeNormalizedBecauseItIsMissingConfiguredPropertyColumnException extends AbstractSqlResultSetMapperException
 {
     public static function create(string $columnName): self
     {
