@@ -4,19 +4,9 @@ declare(strict_types=1);
 
 namespace DBorsatto\SqlResultSetMapper\Tests\Model;
 
-class BlogPost
+final readonly class BlogPost
 {
-    public function __construct(private string $title, private string $body)
+    public function __construct(public string $title, public string $body)
     {
-    }
-
-    public function getTitle(): string
-    {
-        return $this->title;
-    }
-
-    public function getBody(): string
-    {
-        return $this->body;
     }
 }

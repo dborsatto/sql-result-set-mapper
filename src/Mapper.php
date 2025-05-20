@@ -11,11 +11,11 @@ use DBorsatto\SqlResultSetMapper\Exception\SqlResultSetCouldNotBeNormalizedBecau
 use DBorsatto\SqlResultSetMapper\Hydrator\HydratorInterface;
 use DBorsatto\SqlResultSetMapper\Hydrator\LaminasHydrator;
 
-class Mapper
+final class Mapper
 {
     private HydratorInterface $hydrator;
 
-    public function __construct(HydratorInterface $hydrator = null)
+    public function __construct(?HydratorInterface $hydrator = null)
     {
         $this->hydrator = $hydrator ?? new LaminasHydrator();
     }

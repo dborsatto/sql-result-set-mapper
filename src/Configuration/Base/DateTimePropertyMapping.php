@@ -8,14 +8,17 @@ use DateTime;
 use DBorsatto\SqlResultSetMapper\Configuration\PropertyMapping;
 use DBorsatto\SqlResultSetMapper\Configuration\PropertyMappingConverterInterface;
 use DBorsatto\SqlResultSetMapper\Exception\SqlResultSetValueCouldNotBeConvertedException;
+use Override;
+
 use function is_string;
 
 /**
  * @implements PropertyMappingConverterInterface<DateTime>
  */
-class DateTimePropertyMapping extends PropertyMapping implements PropertyMappingConverterInterface
+final readonly class DateTimePropertyMapping extends PropertyMapping implements PropertyMappingConverterInterface
 {
-    public function convert(null|bool|float|int|string $value): null|DateTime
+    #[Override]
+    public function convert(bool|float|int|string|null $value): ?DateTime
     {
         if ($value === null) {
             return null;

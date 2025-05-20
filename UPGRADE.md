@@ -1,5 +1,10 @@
 # Upgrade guide
 
+## 3.x to 4.x
+
+* Minimum version was bumped from PHP 8.0 to PHP 8.3
+* Support for `dborsatto/smart-enums` was removed. The library now uses native PHP enums.
+
 ## 2.x to 3.x
 
 * Minimum version was bumped from PHP 7.4 to PHP 8.0

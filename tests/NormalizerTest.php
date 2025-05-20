@@ -11,7 +11,7 @@ use DBorsatto\SqlResultSetMapper\Normalizer;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
-class NormalizerTest extends TestCase
+final class NormalizerTest extends TestCase
 {
     /**
      * @psalm-suppress MissingThrowsDocblock

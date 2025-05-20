@@ -7,7 +7,7 @@ namespace DBorsatto\SqlResultSetMapper\Tests;
 use DBorsatto\SqlResultSetMapper\Hydrator\LaminasHydrator;
 use PHPUnit\Framework\TestCase;
 
-class LaminasHydratorTest extends TestCase
+final class LaminasHydratorTest extends TestCase
 {
     /**
      * @psalm-suppress MissingThrowsDocblock

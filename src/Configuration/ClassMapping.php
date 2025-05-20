@@ -10,50 +10,33 @@ use function array_values;
 /**
  * @template T of object
  */
-class ClassMapping
+final readonly class ClassMapping
 {
+    /**
+     * @var list<RelationMapping>
+     */
+    public array $relationMappings;
+
+    /**
+     * @var list<PropertyMapping>
+     */
+    public array $propertyMappings;
+
     /**
      * @param class-string<T>                       $targetClass
      * @param list<PropertyMapping|RelationMapping> $mappings
      */
     public function __construct(
-        private string $targetClass,
-        private string $resultSetIdColumn,
-        private array $mappings,
+        public string $targetClass,
+        public string $resultSetIdColumn,
+        array $mappings,
     ) {
-    }
-
-    /**
-     * @return class-string<T>
-     */
-    public function getTargetClass(): string
-    {
-        return $this->targetClass;
-    }
-
-    public function getResultSetIdColumn(): string
-    {
-        return $this->resultSetIdColumn;
-    }
-
-    /**
-     * @return list<RelationMapping>
-     */
-    public function getRelationMappings(): array
-    {
-        return array_values(array_filter(
-            $this->mappings,
+        $this->relationMappings = array_values(array_filter(
+            $mappings,
             static fn ($mapping): bool => $mapping instanceof RelationMapping,
         ));
-    }
-
-    /**
-     * @return list<PropertyMapping>
-     */
-    public function getPropertyMappings(): array
-    {
-        return array_values(array_filter(
-            $this->mappings,
+        $this->propertyMappings = array_values(array_filter(
+            $mappings,
             static fn ($mapping): bool => $mapping instanceof PropertyMapping,
         ));
     }
