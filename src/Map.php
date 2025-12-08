@@ -8,7 +8,7 @@ use BackedEnum;
 use Closure;
 use DBorsatto\SqlResultSetMapper\Configuration\Base\DateTimeImmutablePropertyMapping;
 use DBorsatto\SqlResultSetMapper\Configuration\Base\DateTimePropertyMapping;
-use DBorsatto\SqlResultSetMapper\Configuration\Base\EnumPropertiesMapping;
+use DBorsatto\SqlResultSetMapper\Configuration\Base\EnumJsonListPropertiesMapping;
 use DBorsatto\SqlResultSetMapper\Configuration\Base\EnumPropertyMapping;
 use DBorsatto\SqlResultSetMapper\Configuration\ClassMapping;
 use DBorsatto\SqlResultSetMapper\Configuration\ClosurePropertyMapping;
@@ -110,30 +110,12 @@ final class Map
 
     /**
      * @param class-string<BackedEnum> $enumClass
-     * @param non-empty-string         $symbol
      */
-    public static function smartEnumPropertiesSymbolSeparated(
+    public static function enumJsonListProperties(
         string $objectProperty,
         string $resultSetColumn,
         string $enumClass,
-        string $symbol = ',',
-    ): EnumPropertiesMapping {
-        return EnumPropertiesMapping::fromSymbolSeparatedValues(
-            $objectProperty,
-            $resultSetColumn,
-            $enumClass,
-            $symbol,
-        );
-    }
-
-    /**
-     * @param class-string<BackedEnum> $enumClass
-     */
-    public static function smartEnumPropertiesJson(
-        string $objectProperty,
-        string $resultSetColumn,
-        string $enumClass,
-    ): EnumPropertiesMapping {
-        return EnumPropertiesMapping::fromJsonList($objectProperty, $resultSetColumn, $enumClass);
+    ): EnumJsonListPropertiesMapping {
+        return new EnumJsonListPropertiesMapping($objectProperty, $resultSetColumn, $enumClass);
     }
 }

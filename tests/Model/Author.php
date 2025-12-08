@@ -9,7 +9,6 @@ final readonly class Author
     /**
      * @param list<BlogPost>          $blogPosts
      * @param list<Session>           $sessions
-     * @param list<ConcreteEnum>|null $enumSymbolSeparated
      * @param list<ConcreteEnum>|null $enumJson
      */
     public function __construct(
@@ -20,7 +19,6 @@ final readonly class Author
         public array $sessions,
         public ?Address $address,
         public ?ConcreteEnum $enumValue,
-        public ?array $enumSymbolSeparated,
         public ?array $enumJson,
     ) {
     }

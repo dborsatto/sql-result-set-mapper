@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace DBorsatto\SqlResultSetMapper\Configuration;
 
 use Closure;
-use Override;
 
 /**
  * @template T
@@ -22,7 +21,6 @@ final readonly class ClosurePropertyMapping extends PropertyMapping implements P
         parent::__construct($objectProperty, $resultSetColumn);
     }
 
-    #[Override]
     public function convert(bool|float|int|string|null $value): mixed
     {
         $closure = $this->closure;

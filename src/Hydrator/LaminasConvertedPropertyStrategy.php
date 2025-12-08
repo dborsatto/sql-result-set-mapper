@@ -7,7 +7,6 @@ namespace DBorsatto\SqlResultSetMapper\Hydrator;
 use DBorsatto\SqlResultSetMapper\Configuration\PropertyMappingConverterInterface;
 use DBorsatto\SqlResultSetMapper\Exception\SqlResultSetValueCouldNotBeConvertedException;
 use Laminas\Hydrator\Strategy\StrategyInterface;
-use Override;
 use Throwable;
 
 final class LaminasConvertedPropertyStrategy implements StrategyInterface
@@ -16,7 +15,6 @@ final class LaminasConvertedPropertyStrategy implements StrategyInterface
     {
     }
 
-    #[Override]
     public function extract($value, ?object $object = null): mixed
     {
         return $value;
@@ -25,7 +23,6 @@ final class LaminasConvertedPropertyStrategy implements StrategyInterface
     /**
      * @throws SqlResultSetValueCouldNotBeConvertedException
      */
-    #[Override]
     public function hydrate($value, ?array $data): mixed
     {
         /** @var bool|float|int|string|null $value */
