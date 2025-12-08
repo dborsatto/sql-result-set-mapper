@@ -98,7 +98,6 @@ final class Normalizer
             $dataForCurrentConfiguration[$rowDataId] = $extractedRowData;
         }
 
-        /** @psalm-suppress InvalidScalarArgument */
         return array_values($dataForCurrentConfiguration);
     }
 

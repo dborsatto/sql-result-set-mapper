@@ -10,7 +10,6 @@ use DBorsatto\SqlResultSetMapper\Exception\SqlResultSetCouldNotBeHydratedExcepti
 use Laminas\Hydrator\ReflectionHydrator;
 use Laminas\Hydrator\Strategy\CollectionStrategy;
 use Laminas\Hydrator\Strategy\HydratorStrategy;
-use Override;
 use ReflectionClass;
 use Throwable;
 
@@ -26,7 +25,6 @@ final class LaminasHydrator implements HydratorInterface
      *
      * @return list<T>
      */
-    #[Override]
     public function hydrate(ClassMapping $classMapping, array $items): array
     {
         $hydrator = new ReflectionHydrator();
@@ -36,7 +34,6 @@ final class LaminasHydrator implements HydratorInterface
             $reflectionClass = new ReflectionClass($classMapping->targetClass);
             $convertedItems = [];
             foreach ($items as $item) {
-                /** @var T $object */
                 $object = $reflectionClass->newInstanceWithoutConstructor();
                 $hydrator->hydrate($item, $object);
                 $convertedItems[] = $object;

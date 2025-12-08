@@ -8,9 +8,9 @@ use BackedEnum;
 use DBorsatto\SqlResultSetMapper\Configuration\PropertyMapping;
 use DBorsatto\SqlResultSetMapper\Configuration\PropertyMappingConverterInterface;
 use DBorsatto\SqlResultSetMapper\Exception\SqlResultSetValueCouldNotBeConvertedException;
-use Override;
-use ValueError;
+use Throwable;
 
+use function is_int;
 use function is_string;
 
 /**
@@ -28,14 +28,13 @@ final readonly class EnumPropertyMapping extends PropertyMapping implements Prop
         parent::__construct($objectProperty, $resultSetColumn);
     }
 
-    #[Override]
     public function convert(bool|float|int|string|null $value): ?BackedEnum
     {
         if ($value === null) {
             return null;
         }
 
-        if (!is_string($value) || $value === '') {
+        if (!is_string($value) && !is_int($value)) {
             throw SqlResultSetValueCouldNotBeConvertedException::create($value);
         }
 
@@ -43,7 +42,7 @@ final readonly class EnumPropertyMapping extends PropertyMapping implements Prop
 
         try {
             return $enumClass::from($value);
-        } catch (ValueError $exception) {
+        } catch (Throwable $exception) {
             throw SqlResultSetValueCouldNotBeConvertedException::create($value, $exception);
         }
     }
