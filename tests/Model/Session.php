@@ -8,7 +8,8 @@ use DateTimeImmutable;
 
 final readonly class Session
 {
-    public function __construct(public ?DateTimeImmutable $expiresAt)
-    {
+    public function __construct(
+        public DateTimeImmutable|null $expiresAt,
+    ) {
     }
 }

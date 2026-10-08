@@ -9,15 +9,15 @@ use DBorsatto\SqlResultSetMapper\Exception\SqlResultSetCouldNotBeHydratedExcepti
 use DBorsatto\SqlResultSetMapper\Exception\SqlResultSetCouldNotBeNormalizedBecauseItIsMissingConfiguredPropertyColumnException;
 use DBorsatto\SqlResultSetMapper\Exception\SqlResultSetCouldNotBeNormalizedBecauseItIsMissingRequiredIdColumnException;
 use DBorsatto\SqlResultSetMapper\Hydrator\HydratorInterface;
-use DBorsatto\SqlResultSetMapper\Hydrator\LaminasHydrator;
+use DBorsatto\SqlResultSetMapper\Hydrator\ReflectionHydrator;
 
 final class Mapper
 {
     private HydratorInterface $hydrator;
 
-    public function __construct(?HydratorInterface $hydrator = null)
+    public function __construct(HydratorInterface|null $hydrator = null)
     {
-        $this->hydrator = $hydrator ?? new LaminasHydrator();
+        $this->hydrator = $hydrator ?? new ReflectionHydrator();
     }
 
     /**

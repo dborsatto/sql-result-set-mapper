@@ -6,7 +6,9 @@ namespace DBorsatto\SqlResultSetMapper\Configuration;
 
 readonly class PropertyMapping
 {
-    public function __construct(public string $objectProperty, public string $resultSetColumn)
-    {
+    public function __construct(
+        public string $objectProperty,
+        public string $resultSetColumn,
+    ) {
     }
 }

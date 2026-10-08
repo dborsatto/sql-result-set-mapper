@@ -16,8 +16,11 @@ final readonly class ClosurePropertyMapping extends PropertyMapping implements P
     /**
      * @param Closure(bool|float|int|string|null): T $closure
      */
-    public function __construct(string $objectProperty, string $resultSetColumn, private Closure $closure)
-    {
+    public function __construct(
+        string $objectProperty,
+        string $resultSetColumn,
+        private Closure $closure,
+    ) {
         parent::__construct($objectProperty, $resultSetColumn);
     }
 

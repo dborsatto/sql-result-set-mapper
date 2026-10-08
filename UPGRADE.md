@@ -1,5 +1,15 @@
 # Upgrade guide
 
+## 5.x to 6.x
+
+* Minimum version was bumped from PHP 8.3 to PHP 8.5
+* The library no longer depends on `laminas/laminas-hydrator`. `LaminasHydrator` and `LaminasConvertedPropertyStrategy` were removed, and `Mapper` now uses `ReflectionHydrator` by default. If you passed `LaminasHydrator` to `Mapper` explicitly, use `ReflectionHydrator` instead. If your own code uses Laminas packages, require them in your `composer.json`.
+* `ReflectionHydrator` only sets the properties defined in the `ClassMapping`. Additional keys in the items passed to `HydratorInterface::hydrate()` are ignored.
+
+## 4.x to 5.x
+
+* Support for comma-separated enum lists was removed. Use JSON arrays instead.
+
 ## 3.x to 4.x
 
 * Minimum version was bumped from PHP 8.0 to PHP 8.3

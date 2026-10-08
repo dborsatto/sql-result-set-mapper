@@ -23,12 +23,15 @@ final readonly class EnumPropertyMapping extends PropertyMapping implements Prop
     /**
      * @param class-string<T> $enumClass
      */
-    public function __construct(string $objectProperty, string $resultSetColumn, private string $enumClass)
-    {
+    public function __construct(
+        string $objectProperty,
+        string $resultSetColumn,
+        private string $enumClass,
+    ) {
         parent::__construct($objectProperty, $resultSetColumn);
     }
 
-    public function convert(bool|float|int|string|null $value): ?BackedEnum
+    public function convert(bool|float|int|string|null $value): BackedEnum|null
     {
         if ($value === null) {
             return null;

@@ -6,7 +6,9 @@ namespace DBorsatto\SqlResultSetMapper\Tests\Model;
 
 final readonly class AddressCoordinates
 {
-    public function __construct(public float $longitude, public float $latitude)
-    {
+    public function __construct(
+        public float $longitude,
+        public float $latitude,
+    ) {
     }
 }

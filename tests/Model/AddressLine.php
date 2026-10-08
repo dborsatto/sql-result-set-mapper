@@ -6,7 +6,8 @@ namespace DBorsatto\SqlResultSetMapper\Tests\Model;
 
 final readonly class AddressLine
 {
-    public function __construct(public string $line)
-    {
+    public function __construct(
+        public string $line,
+    ) {
     }
 }

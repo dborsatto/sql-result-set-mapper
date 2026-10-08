@@ -31,7 +31,7 @@ final class DataSet
             Map::propertyConversion(
                 'email',
                 'userEmail',
-                static fn (bool|float|int|string|null $value): ?Email => is_string($value) ? new Email($value) : null,
+                static fn (bool|float|int|string|null $value): Email|null => is_string($value) ? new Email($value) : null,
             ),
             Map::multipleRelation('blogPosts', BlogPost::class, 'blogPostId', [
                 Map::property('title', 'blogPostTitle'),

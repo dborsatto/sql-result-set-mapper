@@ -19,8 +19,9 @@ final class Normalizer
     /**
      * @param ClassMapping<T> $classMapping
      */
-    public function __construct(private ClassMapping $classMapping)
-    {
+    public function __construct(
+        private ClassMapping $classMapping,
+    ) {
     }
 
     /**

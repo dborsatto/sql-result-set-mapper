@@ -8,7 +8,7 @@ use Throwable;
 
 final class SqlResultSetCouldNotBeHydratedException extends AbstractSqlResultSetMapperException
 {
-    public static function create(?Throwable $previous = null): self
+    public static function create(Throwable|null $previous = null): self
     {
         return new self('Sql result set could not be hydrated', $previous);
     }

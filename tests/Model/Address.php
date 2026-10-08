@@ -12,7 +12,7 @@ final readonly class Address
     public function __construct(
         public string $description,
         public array $lines,
-        public ?AddressCoordinates $coordinates,
+        public AddressCoordinates|null $coordinates,
     ) {
     }
 }
