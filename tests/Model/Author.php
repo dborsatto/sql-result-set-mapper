@@ -14,12 +14,12 @@ final readonly class Author
     public function __construct(
         public int $id,
         public string $firstName,
-        public ?Email $email,
+        public Email|null $email,
         public array $blogPosts,
         public array $sessions,
-        public ?Address $address,
-        public ?ConcreteEnum $enumValue,
-        public ?array $enumJson,
+        public Address|null $address,
+        public ConcreteEnum|null $enumValue,
+        public array|null $enumJson,
     ) {
     }
 }

@@ -6,7 +6,8 @@ namespace DBorsatto\SqlResultSetMapper\Tests\Model;
 
 final readonly class Email
 {
-    public function __construct(public string $value)
-    {
+    public function __construct(
+        public string $value,
+    ) {
     }
 }

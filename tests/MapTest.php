@@ -26,7 +26,7 @@ final class MapTest extends TestCase
             Map::propertyConversion(
                 'objectPropertyWithConversion',
                 'propertyColumnWithConversion',
-                static fn (bool|float|int|string|null $value): ?Email => is_string($value) ? new Email($value) : null,
+                static fn (bool|float|int|string|null $value): Email|null => is_string($value) ? new Email($value) : null,
             ),
             Map::datetimeImmutableProperty('datetimeImmutableProperty', 'datetimeImmutableColumn'),
             Map::datetimeProperty('datetimeProperty', 'datetimeColumn'),

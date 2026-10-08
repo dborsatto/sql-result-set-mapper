@@ -2,15 +2,14 @@
     "name": "dborsatto/sql-result-set-mapper",
     "type": "library",
     "require": {
-        "php": "^8.3",
-        "ext-json": "*",
-        "laminas/laminas-hydrator": "^4.0"
+        "php": "^8.5",
+        "ext-json": "*"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^3.75",
-        "phpunit/phpunit": "^9.6",
-        "psalm/plugin-phpunit": "^0.19",
-        "vimeo/psalm": "^6.10"
+        "friendsofphp/php-cs-fixer": "^3.95",
+        "phpunit/phpunit": "^13.4",
+        "psalm/plugin-phpunit": "^0.19.7",
+        "vimeo/psalm": "^6.19"
     },
     "license": "MIT",
     "autoload": {

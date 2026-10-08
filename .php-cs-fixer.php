@@ -17,11 +17,10 @@ return $config->setFinder($finder)
     ->setRiskyAllowed(true)
     ->setRules([
         '@PER-CS' => true,
-        '@DoctrineAnnotation' => true,
         '@PhpCsFixer' => true,
         '@Symfony' => true,
-        '@PHP83Migration' => true,
-        'attribute_empty_parentheses' => false,
+        '@autoPHPMigration' => true,
+        'attribute_empty_parentheses' => true,
         'concat_space' => [
             'spacing' => 'one',
         ],
@@ -41,6 +40,7 @@ return $config->setFinder($finder)
         'logical_operators' => true,
         'modernize_strpos' => true,
         'modernize_types_casting' => true,
+        'multiline_promoted_properties' => true,
         'multiline_whitespace_before_semicolons' => [
             'strategy' => 'no_multi_line',
         ],
@@ -59,7 +59,12 @@ return $config->setFinder($finder)
         'no_trailing_whitespace_in_string' => true,
         'no_unused_imports' => true,
         'no_useless_sprintf' => true,
-        'nullable_type_declaration_for_default_null_value' => false,
+        'nullable_type_declaration' => [
+            'syntax' => 'union',
+        ],
+        'nullable_type_declaration_for_default_null_value' => [
+            'use_nullable_type_declaration' => true,
+        ],
         'ordered_class_elements' => [
             'order' => [
                 'use_trait',
@@ -101,15 +106,46 @@ return $config->setFinder($finder)
                 'throws',
             ],
         ],
-        'phpdoc_separation' => false,
+        'phpdoc_separation' => [
+            'groups' => [
+                [
+                    'psalm-import-type',
+                    'psalm-type',
+                ],
+                [
+                    'var',
+                    'psalm-var',
+                ],
+                [
+                    'param',
+                    'psalm-param',
+                ],
+                [
+                    'return',
+                    'psalm-return',
+                ],
+            ],
+        ],
         'phpdoc_to_comment' => false,
         'php_unit_attributes' => true,
         'php_unit_construct' => true,
+        'php_unit_data_provider_method_order' => [
+            'placement' => 'after',
+        ],
+        'php_unit_data_provider_static' => true,
         'php_unit_dedicate_assert' => true,
+        'php_unit_dedicate_assert_internal_type' => true,
+        'php_unit_expectation' => true,
         'php_unit_internal_class' => false,
         'php_unit_mock_short_will_return' => true,
         'php_unit_set_up_tear_down_visibility' => true,
+        'php_unit_test_case_static_method_calls' => [
+            'call_type' => 'this',
+        ],
         'php_unit_test_class_requires_covers' => false,
+        'return_assignment' => [
+            'skip_named_var_tags' => true,
+        ],
         'self_accessor' => true,
         'string_implicit_backslashes' => false,
         'single_line_empty_body' => false,
